@@ -4,6 +4,7 @@ import (
 	"fmt"
 
 	"github.com/crowleyfelix/star-wars-api/src/configuration"
+	"github.com/crowleyfelix/star-wars-api/src/controllers"
 	"github.com/gin-gonic/gin"
 )
 
@@ -35,5 +36,5 @@ func (s *server) Start() {
 }
 
 func (s *server) registerRoutes() {
-
+	controllers.RegisterRoutes(s.engine.Group("/"))
 }
