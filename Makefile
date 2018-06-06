@@ -44,5 +44,6 @@ cov-html: setup
 
 mock:
 	@mockery -dir=./src/controllers -name=RequestContext --output=src/controllers/mocks -case=underscore
-	@mockery -dir=./src/controllers -name=Controller --output=src/controllers/mocks -case=underscore	
+	@mockery -dir=./src/controllers -name=Controller --output=src/controllers/mocks -case=underscore
+	@mockery -dir=./src/mongodb -name=SessionManager --output=src/mongodb/mocks -case=underscore	
 	
