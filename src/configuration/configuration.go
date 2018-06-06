@@ -21,5 +21,9 @@ func load() {
 
 //Get returns application configuration loaded
 func Get() *Configuration {
+	if config == nil {
+		load()
+	}
+
 	return config
 }
