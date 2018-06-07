@@ -1,6 +1,8 @@
 package mongodb
 
 import (
+	"errors"
+
 	"github.com/crowleyfelix/star-wars-api/src/configuration"
 	"github.com/crowleyfelix/star-wars-api/src/mongodb/models"
 	"github.com/golang/glog"
@@ -10,8 +12,9 @@ import (
 
 type PlanetCollection interface {
 	Insert(planet *models.Planet) error
-	Find(id int) (*models.Planet, error)
-	List(*Pagination) ([]models.Planet, error)
+	Find(query *PlanetSearchQuery) ([]models.Planet, error)
+	FindByID(id int) (*models.Planet, error)
+	List(*Pagination) (*models.PlanetPage, error)
 	Update(planet *models.Planet) error
 	Delete(id int) error
 }
@@ -46,37 +49,58 @@ func (pr *planetCollection) Insert(planet *models.Planet) error {
 	})
 }
 
-func (pr *planetCollection) Find(id int) (*models.Planet, error) {
-	query := bson.M{
-		"_id": id,
+func (pr *planetCollection) FindByID(id int) (*models.Planet, error) {
+	query := &PlanetSearchQuery{
+		ID: &id,
 	}
 
-	var planet models.Planet
+	results, err := pr.Find(query)
 
-	err := pr.execute(func(col *mgo.Collection) error {
-		return col.Find(query).One(&planet)
-	})
+	if err != nil {
+		return nil, err
+	}
 
-	return &planet, err
+	if len(results) == 0 {
+		return nil, errors.New("not found")
+	}
+
+	return &results[0], err
 }
 
-func (pr *planetCollection) List(pagination *Pagination) ([]models.Planet, error) {
-
-	query := bson.M{}
-
+func (pr *planetCollection) Find(query *PlanetSearchQuery) ([]models.Planet, error) {
 	var planets []models.Planet
 
-	offset := (pagination.Page - 1) * pagination.Size
-
 	err := pr.execute(func(col *mgo.Collection) error {
-		return col.
-			Find(query).
-			Skip(offset).
-			Limit(pagination.Size).
-			All(&planets)
+		return col.Find(query).All(&planets)
 	})
 
 	return planets, err
+}
+
+func (pr *planetCollection) List(pagination *Pagination) (*models.PlanetPage, error) {
+
+	var (
+		err   error
+		query = bson.M{}
+		page  = new(models.PlanetPage)
+	)
+
+	err = pr.execute(func(col *mgo.Collection) error {
+		err = col.
+			Find(query).
+			Skip(pr.calculateOffset(pagination)).
+			Limit(pagination.Size).
+			All(&page.Planets)
+
+		if err != nil {
+			return err
+		}
+
+		page.Page, err = pr.calculatePage(col, pagination, len(page.Planets))
+		return err
+	})
+
+	return page, err
 }
 
 func (pr *planetCollection) Update(planet *models.Planet) error {
