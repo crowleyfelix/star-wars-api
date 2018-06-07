@@ -4,10 +4,12 @@ import (
 	"github.com/crowleyfelix/star-wars-api/src/configuration"
 	"github.com/crowleyfelix/star-wars-api/src/mongodb/models"
 	"gopkg.in/mgo.v2"
+	"gopkg.in/mgo.v2/bson"
 )
 
 type PlanetCollection interface {
 	Find(id int) (*models.Planet, error)
+	Insert(planet *models.Planet) error
 }
 
 type planetCollection struct {
@@ -21,12 +23,13 @@ func NewPlanetCollection() PlanetCollection {
 		collection{
 			DataBase:   config.Database,
 			Collection: "planets",
+			CounterID:  "planet_id",
 		},
 	}
 }
 
 func (pr *planetCollection) Find(id int) (*models.Planet, error) {
-	query := Document{
+	query := bson.M{
 		"id": id,
 	}
 
@@ -39,9 +42,25 @@ func (pr *planetCollection) Find(id int) (*models.Planet, error) {
 	return &planet, err
 }
 
-func (pr *planetCollection) Create(planet *models.Planet) error {
+func (pr *planetCollection) Insert(planet *models.Planet) error {
+	return pr.execute(func(col *mgo.Collection) error {
+		var err error
+		planet.ID, err = pr.calculateNextID(col.Database)
+
+		if err != nil {
+			return err
+		}
+
+		return col.Insert(planet)
+	})
+}
+
+func (pr *planetCollection) Update(planet *models.Planet) error {
+	query := bson.M{
+		"id": planet.ID,
+	}
 
 	return pr.execute(func(col *mgo.Collection) error {
-		return col.Insert(planet)
+		return col.Update(query, planet)
 	})
 }
