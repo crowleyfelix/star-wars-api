@@ -19,7 +19,7 @@ fmt:
 setup: dep
 
 run: dep
-	@go run main.go
+	@go run src/main.go
 
 check: setup
 	@gometalinter ./... --aggregate --fast $(MODIFIED_FILES)
