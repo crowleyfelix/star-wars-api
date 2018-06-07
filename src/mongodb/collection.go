@@ -60,8 +60,8 @@ func (c *collection) calculateNextID(db *mgo.Database) (int, error) {
 	return counter.SequenceValue, nil
 }
 
-func (c *collection) calculatePage(collection *mgo.Collection, pagination *Pagination, totalItems int) (*models.Page, error) {
-	count, err := collection.Count()
+func (c *collection) calculatePage(collection *mgo.Collection, query interface{}, pagination *Pagination, totalItems int) (*models.Page, error) {
+	count, err := collection.Find(query).Count()
 
 	if err != nil {
 		return nil, err
