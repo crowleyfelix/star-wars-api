@@ -6,6 +6,7 @@ import (
 	"gopkg.in/mgo.v2"
 )
 
+//SessionManager exposes session manager methods
 type SessionManager interface {
 	Session() (*mgo.Session, error)
 	Release(*mgo.Session)
@@ -44,7 +45,7 @@ func (p *pool) Session() (*mgo.Session, error) {
 	}
 
 	p.active <- 1
-	glog.Info("%d active sessions", len(p.active))
+	glog.Infof("%d active sessions", len(p.active))
 
 	return p.session.Copy(), nil
 }
@@ -54,6 +55,6 @@ func (p *pool) Release(session *mgo.Session) {
 
 	<-p.active
 
-	glog.Info("%d active sessions", len(p.active))
+	glog.Infof("%d active sessions", len(p.active))
 	session.Close()
 }

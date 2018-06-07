@@ -17,7 +17,6 @@ type Planet interface {
 }
 
 type planet struct {
-	Planet
 	client   swapi.Client
 	database mongodb.PlanetCollection
 }
