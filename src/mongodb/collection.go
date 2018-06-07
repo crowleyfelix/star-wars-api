@@ -17,13 +17,13 @@ type collection struct {
 }
 
 func (c *collection) execute(operation func(*mgo.Collection) error) error {
-	session, err := Pool.Session()
+	session, err := Pool().Session()
 
 	if err != nil {
 		return err
 	}
 
-	defer Pool.Release(session)
+	defer Pool().Release(session)
 
 	col := session.DB(c.DataBase).C(c.Collection)
 	return operation(col)

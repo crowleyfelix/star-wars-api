@@ -16,6 +16,17 @@ type pool struct {
 	active  chan int
 }
 
+//Pool returns mongodb session manager
+func Pool() SessionManager {
+	if sessionManager == nil {
+		config := configuration.Get().MongoDB
+		sessionManager = &pool{
+			active: make(chan int, config.MaxPoolSize),
+		}
+	}
+	return sessionManager
+}
+
 func (p *pool) Session() (*mgo.Session, error) {
 	var err error
 
