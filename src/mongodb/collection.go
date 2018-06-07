@@ -3,6 +3,8 @@ package mongodb
 import (
 	"errors"
 
+	"github.com/golang/glog"
+
 	"github.com/crowleyfelix/star-wars-api/src/mongodb/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -28,21 +30,24 @@ func (c *collection) execute(operation func(*mgo.Collection) error) error {
 }
 
 func (c *collection) calculateNextID(db *mgo.Database) (int, error) {
-
 	var counter models.Counter
+
+	change := mgo.Change{
+		Update: bson.M{
+			"$inc": bson.M{
+				"sequence_value": 1,
+			},
+		},
+		ReturnNew: true,
+	}
+
+	glog.Infof("Updating counter of %s: %#v", c.CounterID, change)
 
 	info, err := db.C("counters").
 		Find(bson.M{
 			"_id": c.CounterID,
 		}).
-		Apply(mgo.Change{
-			Update: bson.M{
-				"$inc": bson.M{
-					"sequence_value": 1,
-				},
-			},
-			ReturnNew: true,
-		}, &counter)
+		Apply(change, &counter)
 
 	if err != nil {
 		return 0, err
