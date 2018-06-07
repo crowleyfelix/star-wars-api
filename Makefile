@@ -19,7 +19,7 @@ fmt:
 setup: dep
 
 run: dep
-	@go run src/main.go
+	@go run api/main.go
 
 check: setup
 	@gometalinter ./... --aggregate --fast $(MODIFIED_FILES)
@@ -43,7 +43,10 @@ cov-html: setup
 	@gocov test -gcflags=-l --tags=integration ./... | gocov-html > cov.html
 
 mock:
-	@mockery -dir=./src/controllers -name=RequestContext --output=src/controllers/mocks -case=underscore
-	@mockery -dir=./src/controllers -name=Controller --output=src/controllers/mocks -case=underscore
-	@mockery -dir=./src/mongodb -name=SessionManager --output=src/mongodb/mocks -case=underscore	
+	@mockery -dir=./api/clients/swapi -name=Client --output=api/clients/swapi/mocks -case=underscore	
+	@mockery -dir=./api/controllers -name=RequestContext --output=api/controllers/mocks -case=underscore
+	@mockery -dir=./api/controllers -name=Controller --output=api/controllers/mocks -case=underscore
+	@mockery -dir=./api/database/mongodb -name=SessionPool --output=api/database/mongodb/mocks -case=underscore	
+	@mockery -dir=./api/database/mongodb/collections -name=Planets --output=api/database/mongodb/collections/mocks -case=underscore	
+	@mockery -dir=./api/services -name=Planet --output=api/services/mocks -case=underscore	
 	
