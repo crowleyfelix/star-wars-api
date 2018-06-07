@@ -1,7 +1,7 @@
 package services
 
 import (
-	"github.com/crowleyfelix/star-wars-api/src/mongodb"
+	mongodb "github.com/crowleyfelix/star-wars-api/api/database/mongodb/collections"
 )
 
 type Pagination struct {

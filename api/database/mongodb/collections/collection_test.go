@@ -1,10 +1,11 @@
-package mongodb
+package collections
 
 import (
 	"errors"
 
 	"github.com/bouk/monkey"
-	"github.com/crowleyfelix/star-wars-api/src/mongodb/mocks"
+	"github.com/crowleyfelix/star-wars-api/api/database/mongodb"
+	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/mocks"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
@@ -15,12 +16,12 @@ var _ = Describe("Collection", func() {
 
 	var (
 		coll     *collection
-		mockPool = new(mocks.SessionManager)
+		mockPool = new(mocks.SessionPool)
 	)
 
 	BeforeEach(func() {
 		coll = new(collection)
-		monkey.Patch(Pool, func() SessionManager { return mockPool })
+		monkey.Patch(mongodb.Pool, func() SessionPool { return mockPool })
 	})
 	AfterEach(func() { monkey.UnpatchAll() })
 

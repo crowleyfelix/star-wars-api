@@ -3,9 +3,9 @@ package services
 import (
 	"sync"
 
-	"github.com/crowleyfelix/star-wars-api/src/clients/swapi"
-	"github.com/crowleyfelix/star-wars-api/src/models"
-	"github.com/crowleyfelix/star-wars-api/src/mongodb"
+	"github.com/crowleyfelix/star-wars-api/api/clients/swapi"
+	mongodb "github.com/crowleyfelix/star-wars-api/api/database/mongodb/collections"
+	"github.com/crowleyfelix/star-wars-api/api/models"
 )
 
 //Planet exposes necessary methods of a planet service
@@ -18,14 +18,14 @@ type Planet interface {
 
 type planet struct {
 	client   swapi.Client
-	database mongodb.PlanetCollection
+	database mongodb.Planets
 }
 
 //NewPlanet returns a new planet service
 func NewPlanet() Planet {
 	return &planet{
 		client:   swapi.New(),
-		database: mongodb.NewPlanetCollection(),
+		database: mongodb.NewPlanets(),
 	}
 }
 

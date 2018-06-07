@@ -3,8 +3,8 @@ package server
 import (
 	"fmt"
 
-	"github.com/crowleyfelix/star-wars-api/src/configuration"
-	"github.com/crowleyfelix/star-wars-api/src/controllers"
+	"github.com/crowleyfelix/star-wars-api/api/configuration"
+	"github.com/crowleyfelix/star-wars-api/api/controllers"
 	"github.com/gin-gonic/gin"
 )
 

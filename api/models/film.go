@@ -1,6 +1,6 @@
 package models
 
-import "github.com/crowleyfelix/star-wars-api/src/clients/swapi"
+import "github.com/crowleyfelix/star-wars-api/api/clients/swapi"
 
 //Film represents an film application model
 type Film struct {
