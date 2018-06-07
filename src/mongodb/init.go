@@ -1,9 +1,16 @@
 package mongodb
 
+import (
+	"github.com/crowleyfelix/star-wars-api/src/configuration"
+)
+
 var (
 	Pool SessionManager
 )
 
 func init() {
-	Pool = new(pool)
+	config := configuration.Get().MongoDB
+	Pool = &pool{
+		active: make(chan int, config.MaxPoolSize),
+	}
 }
