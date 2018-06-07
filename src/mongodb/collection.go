@@ -59,3 +59,31 @@ func (c *collection) calculateNextID(db *mgo.Database) (int, error) {
 
 	return counter.SequenceValue, nil
 }
+
+func (c *collection) calculatePage(collection *mgo.Collection, pagination *Pagination, totalItems int) (*models.Page, error) {
+	count, err := collection.Count()
+
+	if err != nil {
+		return nil, err
+	}
+
+	page := &models.Page{
+		Current: pagination.Page,
+		Size:    totalItems,
+		MaxSize: pagination.Size,
+	}
+	if pagination.Page > 1 {
+		previous := pagination.Page - 1
+		page.Previous = &previous
+	}
+	if pagination.Page*pagination.Size < count {
+		next := pagination.Page + 1
+		page.Next = &next
+	}
+
+	return page, err
+}
+
+func (c *collection) calculateOffset(pagination *Pagination) int {
+	return (pagination.Page - 1) * pagination.Size
+}

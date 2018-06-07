@@ -7,3 +7,9 @@ type Planet struct {
 	Climate string `bson:"climate"`
 	Terrain string `bson:"terrain"`
 }
+
+//PlanetPage represents a star wars planet page
+type PlanetPage struct {
+	*Page
+	Planets []Planet
+}
