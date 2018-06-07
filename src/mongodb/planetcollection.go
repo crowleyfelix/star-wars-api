@@ -10,13 +10,13 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+//PlanetCollection exposes methods of planet CRUD operations
 type PlanetCollection interface {
-	Insert(planet *models.Planet) error
-	Find(query *PlanetSearchQuery) ([]models.Planet, error)
-	FindByID(id int) (*models.Planet, error)
-	List(*Pagination) (*models.PlanetPage, error)
-	Update(planet *models.Planet) error
-	Delete(id int) error
+	Insert(*models.Planet) error
+	Find(*PlanetSearchQuery, *Pagination) (*models.PlanetPage, error)
+	FindByID(int) (*models.Planet, error)
+	Update(*models.Planet) error
+	Delete(int) error
 }
 
 type planetCollection struct {
@@ -53,36 +53,29 @@ func (pr *planetCollection) FindByID(id int) (*models.Planet, error) {
 	query := &PlanetSearchQuery{
 		ID: &id,
 	}
+	pagination := &Pagination{
+		Page: 1,
+		Size: 1,
+	}
 
-	results, err := pr.Find(query)
+	page, err := pr.Find(query, pagination)
 
 	if err != nil {
 		return nil, err
 	}
 
-	if len(results) == 0 {
+	if page.Size == 0 {
 		return nil, errors.New("not found")
 	}
 
-	return &results[0], err
+	return &page.Planets[0], err
 }
 
-func (pr *planetCollection) Find(query *PlanetSearchQuery) ([]models.Planet, error) {
-	var planets []models.Planet
-
-	err := pr.execute(func(col *mgo.Collection) error {
-		return col.Find(query).All(&planets)
-	})
-
-	return planets, err
-}
-
-func (pr *planetCollection) List(pagination *Pagination) (*models.PlanetPage, error) {
+func (pr *planetCollection) Find(query *PlanetSearchQuery, pagination *Pagination) (*models.PlanetPage, error) {
 
 	var (
-		err   error
-		query = bson.M{}
-		page  = new(models.PlanetPage)
+		err  error
+		page = new(models.PlanetPage)
 	)
 
 	err = pr.execute(func(col *mgo.Collection) error {
@@ -96,7 +89,7 @@ func (pr *planetCollection) List(pagination *Pagination) (*models.PlanetPage, er
 			return err
 		}
 
-		page.Page, err = pr.calculatePage(col, pagination, len(page.Planets))
+		page.Page, err = pr.calculatePage(col, query, pagination, len(page.Planets))
 		return err
 	})
 
@@ -109,7 +102,7 @@ func (pr *planetCollection) Update(planet *models.Planet) error {
 	}
 
 	return pr.execute(func(col *mgo.Collection) error {
-		return col.Update(query, planet)
+		return col.Update(query, bson.M{"$set": planet})
 	})
 }
 

@@ -57,26 +57,49 @@ var _ = Describe("PlanetCollection", func() {
 		})
 	})
 
-	Describe("Find(): When finding planet", func() {
+	Describe("Find(): When finding planets", func() {
 		var (
-			results []models.Planet
-			err     error
+			pagination *Pagination
 		)
 
-		JustBeforeEach(func() {
+		var (
+			actual *models.PlanetPage
+			expect *models.PlanetPage
+			err    error
+		)
+
+		BeforeEach(func() {
+			pagination = &Pagination{
+				Page: 1,
+				Size: 1,
+			}
 			query := &PlanetSearchQuery{
 				Name: &planet.Name,
 			}
-			results, err = coll.Find(query)
+
+			actual, err = coll.Find(query, pagination)
+
+			if actual != nil && len(actual.Planets) > 0 {
+				id = actual.Planets[0].ID
+				planet.ID = id
+			}
+
+			expect = &models.PlanetPage{
+				Page: &models.Page{
+					MaxSize:  1,
+					Size:     1,
+					Current:  1,
+					Previous: nil,
+					Next:     nil,
+				},
+				Planets: []models.Planet{*planet},
+			}
 		})
 		AfterEach(func() {
-			if len(results) > 0 {
-				id = results[0].ID
-			}
 		})
 		It("should get planet", func() {
 			Expect(err).To(BeNil())
-			Expect(results).To(HaveLen(1))
+			Expect(actual).To(Equal(expect))
 		})
 	})
 
@@ -86,36 +109,12 @@ var _ = Describe("PlanetCollection", func() {
 			err    error
 		)
 
-		JustBeforeEach(func() {
+		BeforeEach(func() {
 			actual, err = coll.FindByID(planet.ID)
 		})
 		It("should get planet", func() {
 			Expect(err).To(BeNil())
 			Expect(actual).To(BeEquivalentTo(planet))
-		})
-	})
-
-	Describe("List(): When listing planets", func() {
-		var (
-			pagination = &Pagination{
-				Page: 1,
-				Size: 10,
-			}
-		)
-
-		var (
-			page *models.PlanetPage
-			err  error
-		)
-
-		JustBeforeEach(func() {
-			page, err = coll.List(pagination)
-		})
-		It("should list planets paged", func() {
-			Expect(err).To(BeNil())
-			Expect(len(page.Planets) < 11).To(BeTrue())
-			Expect(page.MaxSize).To(Equal(pagination.Size))
-			Expect(page.Current).To(Equal(pagination.Page))
 		})
 	})
 

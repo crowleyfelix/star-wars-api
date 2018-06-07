@@ -6,6 +6,8 @@ type Pagination struct {
 }
 
 type PlanetSearchQuery struct {
-	ID   *int    `bson:"_id,omitempty"`
-	Name *string `bson:"name,omitempty"`
+	ID      *int    `bson:"_id,omitempty"`
+	Name    *string `bson:"name,omitempty"`
+	Climate *string `bson:"climate,omitempty"`
+	Terrain *string `bson:"terrain,omitempty"`
 }
