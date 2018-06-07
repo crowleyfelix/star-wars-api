@@ -3,13 +3,17 @@ package mongodb
 import (
 	"github.com/crowleyfelix/star-wars-api/src/configuration"
 	"github.com/crowleyfelix/star-wars-api/src/mongodb/models"
+	"github.com/golang/glog"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
 
 type PlanetCollection interface {
-	Find(id int) (*models.Planet, error)
 	Insert(planet *models.Planet) error
+	Find(id int) (*models.Planet, error)
+	List(*Pagination) ([]models.Planet, error)
+	Update(planet *models.Planet) error
+	Delete(id int) error
 }
 
 type planetCollection struct {
@@ -28,9 +32,23 @@ func NewPlanetCollection() PlanetCollection {
 	}
 }
 
+func (pr *planetCollection) Insert(planet *models.Planet) error {
+	return pr.execute(func(col *mgo.Collection) error {
+		var err error
+		planet.ID, err = pr.calculateNextID(col.Database)
+
+		if err != nil {
+			glog.Errorf("Failed calculating next id: %s", err.Error())
+			return err
+		}
+
+		return col.Insert(planet)
+	})
+}
+
 func (pr *planetCollection) Find(id int) (*models.Planet, error) {
 	query := bson.M{
-		"id": id,
+		"_id": id,
 	}
 
 	var planet models.Planet
@@ -42,25 +60,41 @@ func (pr *planetCollection) Find(id int) (*models.Planet, error) {
 	return &planet, err
 }
 
-func (pr *planetCollection) Insert(planet *models.Planet) error {
-	return pr.execute(func(col *mgo.Collection) error {
-		var err error
-		planet.ID, err = pr.calculateNextID(col.Database)
+func (pr *planetCollection) List(pagination *Pagination) ([]models.Planet, error) {
 
-		if err != nil {
-			return err
-		}
+	query := bson.M{}
 
-		return col.Insert(planet)
+	var planets []models.Planet
+
+	offset := (pagination.Page - 1) * pagination.Size
+
+	err := pr.execute(func(col *mgo.Collection) error {
+		return col.
+			Find(query).
+			Skip(offset).
+			Limit(pagination.Size).
+			All(&planets)
 	})
+
+	return planets, err
 }
 
 func (pr *planetCollection) Update(planet *models.Planet) error {
 	query := bson.M{
-		"id": planet.ID,
+		"_id": planet.ID,
 	}
 
 	return pr.execute(func(col *mgo.Collection) error {
 		return col.Update(query, planet)
+	})
+}
+
+func (pr *planetCollection) Delete(id int) error {
+	query := bson.M{
+		"_id": id,
+	}
+
+	return pr.execute(func(col *mgo.Collection) error {
+		return col.Remove(query)
 	})
 }
