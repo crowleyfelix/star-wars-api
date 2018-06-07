@@ -24,7 +24,7 @@ var _ = Describe("Collection", func() {
 	})
 	AfterEach(func() { monkey.UnpatchAll() })
 
-	Describe("execute", func() {
+	Describe("execute(): When executing operation", func() {
 		var (
 			actualErr     error
 			expectedErr   error
@@ -37,24 +37,22 @@ var _ = Describe("Collection", func() {
 		JustBeforeEach(func() {
 			actualErr = coll.execute(mockOperation)
 		})
-		Context("When executing operation", func() {
-			Context("and failed creating session", func() {
-				BeforeEach(func() {
-					expectedErr = errors.New("error")
-					mockPool.On("Session").Return(nil, expectedErr).Once()
-				})
-				It("should return an error", func() {
-					Expect(actualErr).To(Equal(expectedErr))
-				})
+		Context("and failed creating session", func() {
+			BeforeEach(func() {
+				expectedErr = errors.New("error")
+				mockPool.On("Session").Return(nil, expectedErr).Once()
 			})
-			Context("and success creating session", func() {
-				BeforeEach(func() {
-					mockPool.On("Session").Return(mockSession, nil).Once()
-					mockPool.On("Release", mockSession).Return().Once()
-				})
-				It("should return operation result", func() {
-					Expect(actualErr).To(Equal(expectedErr))
-				})
+			It("should return an error", func() {
+				Expect(actualErr).To(Equal(expectedErr))
+			})
+		})
+		Context("and success creating session", func() {
+			BeforeEach(func() {
+				mockPool.On("Session").Return(mockSession, nil).Once()
+				mockPool.On("Release", mockSession).Return().Once()
+			})
+			It("should return operation result", func() {
+				Expect(actualErr).To(Equal(expectedErr))
 			})
 		})
 	})
