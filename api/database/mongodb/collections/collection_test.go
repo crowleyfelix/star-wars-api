@@ -21,7 +21,7 @@ var _ = Describe("Collection", func() {
 
 	BeforeEach(func() {
 		coll = new(collection)
-		monkey.Patch(mongodb.Pool, func() SessionPool { return mockPool })
+		monkey.Patch(mongodb.Pool, func() mongodb.SessionPool { return mockPool })
 	})
 	AfterEach(func() { monkey.UnpatchAll() })
 

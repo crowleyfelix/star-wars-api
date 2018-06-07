@@ -1,4 +1,4 @@
-package mongodb
+package collections
 
 import (
 	"testing"
@@ -9,5 +9,5 @@ import (
 
 func TestMongoDB(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "MongoDB Suite")
+	RunSpecs(t, "Collections Suite")
 }

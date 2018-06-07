@@ -11,10 +11,10 @@ import (
 	"github.com/satori/go.uuid"
 )
 
-var _ = Describe("PlanetCollection", func() {
+var _ = Describe("Planets", func() {
 
 	var (
-		coll   = NewPlanetCollection()
+		coll   = NewPlanets()
 		planet *models.Planet
 		id     int
 		name   string
