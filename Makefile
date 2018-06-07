@@ -37,12 +37,13 @@ test-integ:
 	@ginkgo -gcflags=-l --tags=integration ./...
 
 cov: setup
-	@gocov test -gcflags=-l ./... | gocov report
+	@gocov test -gcflags=-l --tags=integration ./... | gocov report
 	
 cov-html: setup
-	@gocov test -gcflags=-l ./... | gocov-html > cov.html
+	@gocov test -gcflags=-l --tags=integration ./... | gocov-html > cov.html
 
 mock:
 	@mockery -dir=./src/controllers -name=RequestContext --output=src/controllers/mocks -case=underscore
-	@mockery -dir=./src/controllers -name=Controller --output=src/controllers/mocks -case=underscore	
+	@mockery -dir=./src/controllers -name=Controller --output=src/controllers/mocks -case=underscore
+	@mockery -dir=./src/mongodb -name=SessionManager --output=src/mongodb/mocks -case=underscore	
 	

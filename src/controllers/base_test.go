@@ -31,7 +31,7 @@ var _ = Describe("Base", func() {
 	})
 
 	Describe("invokeMethod", func() {
-		Describe("When received a GET http method", func() {
+		Context("When received a GET http method", func() {
 			BeforeEach(func() {
 				context.Request.Method = http.MethodGet
 				handler.On("Get").Return().Once()
@@ -40,7 +40,7 @@ var _ = Describe("Base", func() {
 				invokeMethod(context, handler)
 			})
 		})
-		Describe("When received a POST http method", func() {
+		Context("When received a POST http method", func() {
 			BeforeEach(func() {
 				context.Request.Method = http.MethodPost
 				handler.On("Post").Return().Once()
@@ -49,7 +49,7 @@ var _ = Describe("Base", func() {
 				invokeMethod(context, handler)
 			})
 		})
-		Describe("When received a PUT http method", func() {
+		Context("When received a PUT http method", func() {
 			BeforeEach(func() {
 				context.Request.Method = http.MethodPut
 				handler.On("Put").Return().Once()
@@ -58,7 +58,7 @@ var _ = Describe("Base", func() {
 				invokeMethod(context, handler)
 			})
 		})
-		Describe("When received a DELETE http method", func() {
+		Context("When received a DELETE http method", func() {
 			BeforeEach(func() {
 				context.Request.Method = http.MethodDelete
 				handler.On("Delete").Return().Once()
@@ -67,7 +67,7 @@ var _ = Describe("Base", func() {
 				invokeMethod(context, handler)
 			})
 		})
-		Describe("When received an invalid http method", func() {
+		Context("When received an invalid http method", func() {
 			BeforeEach(func() {
 				context.Request.Method = http.MethodTrace
 				monkey.PatchInstanceMethod(reflect.TypeOf(context), "JSON", func(_ *gin.Context, code int, obj interface{}) {
