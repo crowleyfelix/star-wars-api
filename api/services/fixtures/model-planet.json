@@ -1,0 +1,16 @@
+{
+    "id": 1,
+    "name": "Hoth",
+    "climate": "temperate",
+    "terrain": "grasslands, mountains",
+    "films": [
+        {
+            "episodeId": 4,
+            "title": "A New Hope"
+        },
+        {
+            "episodeId": 5,
+            "title": "The Empire Strikes Back"
+        }
+    ]
+}
