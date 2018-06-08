@@ -7,4 +7,5 @@ import (
 //RegisterRoutes register API routes
 func RegisterRoutes(group *gin.RouterGroup) {
 	group.GET("/health-check", HealthCheck)
+	group.GET("/planets", Planets)
 }
