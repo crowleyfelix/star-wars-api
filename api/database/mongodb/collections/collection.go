@@ -3,7 +3,7 @@ package collections
 import (
 	"github.com/crowleyfelix/star-wars-api/api/errors"
 
-	"github.com/golang/glog"
+	"github.com/aphistic/gomol"
 
 	"github.com/crowleyfelix/star-wars-api/api/database/mongodb"
 	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
@@ -42,7 +42,7 @@ func (c *collection) calculateNextID(db *mgo.Database) (int, errors.Error) {
 		ReturnNew: true,
 	}
 
-	glog.Infof("Updating counter of %s: %#v", c.CounterID, change)
+	gomol.Infof("Updating counter of %s: %#v", c.CounterID, change)
 
 	info, err := db.C("counters").
 		Find(bson.M{

@@ -1,9 +1,9 @@
 package mongodb
 
 import (
+	"github.com/aphistic/gomol"
 	"github.com/crowleyfelix/star-wars-api/api/configuration"
 	"github.com/crowleyfelix/star-wars-api/api/errors"
-	"github.com/golang/glog"
 	"gopkg.in/mgo.v2"
 )
 
@@ -33,29 +33,29 @@ func (p *pool) Session() (*mgo.Session, errors.Error) {
 	var err error
 
 	if p.session == nil {
-		glog.Info("Creating new session")
+		gomol.Info("Creating new session")
 
 		uri := configuration.Get().MongoDB.URI
 		p.session, err = mgo.Dial(uri)
 
 		if err != nil {
-			glog.Error("Failed on creating session")
+			gomol.Error("Failed on creating session")
 
 			return nil, errors.NewInternalServer(err.Error())
 		}
 	}
 
 	p.active <- 1
-	glog.Infof("%d active sessions", len(p.active))
+	gomol.Infof("%d active sessions", len(p.active))
 
 	return p.session.Copy(), nil
 }
 
 func (p *pool) Release(session *mgo.Session) {
-	glog.Info("Releasing session")
+	gomol.Info("Releasing session")
 
 	<-p.active
 
-	glog.Infof("%d active sessions", len(p.active))
+	gomol.Infof("%d active sessions", len(p.active))
 	session.Close()
 }

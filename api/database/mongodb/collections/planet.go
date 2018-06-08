@@ -5,9 +5,9 @@ import (
 
 	"github.com/crowleyfelix/star-wars-api/api/errors"
 
+	"github.com/aphistic/gomol"
 	"github.com/crowleyfelix/star-wars-api/api/configuration"
 	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
-	"github.com/golang/glog"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -38,14 +38,14 @@ func NewPlanets() Planets {
 }
 
 func (pr *planets) Insert(planet *models.Planet) errors.Error {
-	glog.Infof("Inserting planet %#v on database", planet)
+	gomol.Infof("Inserting planet %#v on database", planet)
 
 	return pr.execute(func(col *mgo.Collection) error {
 		var err errors.Error
 		planet.ID, err = pr.calculateNextID(col.Database)
 
 		if err != nil {
-			glog.Errorf("Failed on calculating next id: %s", err.Error())
+			gomol.Errorf("Failed on calculating next id: %s", err.Error())
 			return err
 		}
 
@@ -54,7 +54,7 @@ func (pr *planets) Insert(planet *models.Planet) errors.Error {
 }
 
 func (pr *planets) FindByID(id int) (*models.Planet, errors.Error) {
-	glog.Infof("Finding planet %d on database", id)
+	gomol.Infof("Finding planet %d on database", id)
 
 	query := &PlanetSearchQuery{
 		ID: &id,
@@ -67,12 +67,12 @@ func (pr *planets) FindByID(id int) (*models.Planet, errors.Error) {
 	page, err := pr.Find(query, pagination)
 
 	if err != nil {
-		glog.Errorf("Failed on finding planet id %d on database: %s", id, err.Error())
+		gomol.Errorf("Failed on finding planet id %d on database: %s", id, err.Error())
 		return nil, err
 	}
 
 	if page.Size == 0 {
-		glog.Errorf("Planet id %d was not found on database", id)
+		gomol.Errorf("Planet id %d was not found on database", id)
 		return nil, errors.NewNotFound(fmt.Sprintf("Planet id %d was not found", id))
 	}
 
@@ -105,7 +105,7 @@ func (pr *planets) Find(query *PlanetSearchQuery, pagination *Pagination) (*mode
 }
 
 func (pr *planets) Update(planet *models.Planet) errors.Error {
-	glog.Infof("Updating planet %d on database", planet.ID)
+	gomol.Infof("Updating planet %d on database", planet.ID)
 
 	query := bson.M{
 		"_id": planet.ID,
@@ -117,7 +117,7 @@ func (pr *planets) Update(planet *models.Planet) errors.Error {
 }
 
 func (pr *planets) Delete(id int) errors.Error {
-	glog.Infof("Deleting planet %d on database", id)
+	gomol.Infof("Deleting planet %d on database", id)
 
 	query := bson.M{
 		"_id": id,

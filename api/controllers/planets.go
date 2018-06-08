@@ -1,10 +1,10 @@
 package controllers
 
 import (
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 	"github.com/crowleyfelix/star-wars-api/api/models"
 	"github.com/crowleyfelix/star-wars-api/api/services"
 	"github.com/gin-gonic/gin"
-	"github.com/stone-payments/CaduGO/errors"
 )
 
 type planets struct {
