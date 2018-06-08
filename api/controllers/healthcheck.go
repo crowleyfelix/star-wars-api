@@ -21,14 +21,14 @@ func HealthCheck(c *gin.Context) {
 }
 
 func (h *healthCheck) Get() {
-	var dependencies []dependencie
+	var dependencies []Dependencie
 
 	checkers := []checker{
 		h.checkSwapi,
 		h.checkMongoDB,
 	}
 
-	depc := make(chan dependencie, len(checkers))
+	depc := make(chan Dependencie, len(checkers))
 
 	go func() {
 		for i := range checkers {
@@ -36,15 +36,20 @@ func (h *healthCheck) Get() {
 		}
 	}()
 
+	status := http.StatusOK
 	for i := 0; i < len(checkers); i++ {
 		dependencies = append(dependencies, <-depc)
+
+		if dependencies[i].Error != nil {
+			status = http.StatusInternalServerError
+		}
 	}
 
-	h.context.JSON(http.StatusOK, dependencies)
+	h.context.JSON(status, dependencies)
 }
 
-func (h *healthCheck) checkSwapi(depc chan dependencie) {
-	dep := dependencie{Name: "Swapi"}
+func (h *healthCheck) checkSwapi(depc chan Dependencie) {
+	dep := Dependencie{Name: "Swapi"}
 
 	if _, err := swapi.New().Endpoints(); err != nil {
 		*dep.Error = err.Error()
@@ -53,8 +58,8 @@ func (h *healthCheck) checkSwapi(depc chan dependencie) {
 	depc <- dep
 }
 
-func (h *healthCheck) checkMongoDB(depc chan dependencie) {
-	dep := dependencie{Name: "MongoDB"}
+func (h *healthCheck) checkMongoDB(depc chan Dependencie) {
+	dep := Dependencie{Name: "MongoDB"}
 
 	var (
 		session *mgo.Session
@@ -72,9 +77,4 @@ func (h *healthCheck) checkMongoDB(depc chan dependencie) {
 	depc <- dep
 }
 
-type dependencie struct {
-	Name  string  `json:"name"`
-	Error *string `json:"error"`
-}
-
-type checker func(depc chan dependencie)
+type checker func(depc chan Dependencie)
