@@ -13,6 +13,7 @@ import (
 
 //Client exposes swapi client methods
 type Client interface {
+	Endpoints() (map[string]interface{}, error)
 	PlanetFilms(name string) ([]Film, error)
 }
 
@@ -21,6 +22,25 @@ type client struct{}
 //New returns a new Swapi Client
 func New() Client {
 	return new(client)
+}
+
+func (s *client) Endpoints() (map[string]interface{}, error) {
+	endpoints := make(map[string]interface{})
+
+	resp, err := grequests.Get(swapiURL, nil)
+
+	if err != nil {
+		glog.Errorf("Failed on requesting to swapi")
+
+		return nil, err
+	}
+
+	if err = resp.JSON(&endpoints); err != nil {
+		glog.Errorf("Failed on deserializing swapi response")
+		return nil, err
+	}
+
+	return endpoints, err
 }
 
 func (s *client) PlanetFilms(name string) ([]Film, error) {
