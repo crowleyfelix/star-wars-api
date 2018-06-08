@@ -42,8 +42,16 @@ func (p *planet) Get(id int) (*models.Planet, error) {
 
 	var data models.Planet
 	data.From(raw)
+	data.Films = make(models.Films, 0)
 
-	return &data, p.fetchFilms([]models.Planet{data})
+	var planets []*models.Planet
+	planets = append(planets, &data)
+
+	if err = p.fetchFilms(planets); err != nil {
+		return nil, err
+	}
+
+	return &data, nil
 }
 
 func (p *planet) Search(params *PlanetSearchParams, pagination *Pagination) (*models.PlanetPage, error) {
@@ -55,14 +63,25 @@ func (p *planet) Search(params *PlanetSearchParams, pagination *Pagination) (*mo
 
 	page := new(models.PlanetPage)
 	page.From(raw)
-	return page, p.fetchFilms(page.Planets)
+
+	planets := make([]*models.Planet, 0)
+	for i := range page.Planets {
+		planets = append(planets, &page.Planets[i])
+	}
+
+	if err = p.fetchFilms(planets); err != nil {
+		return nil, err
+	}
+
+	return page, nil
 }
 
 func (p *planet) Remove(id int) error {
 	return p.database.Delete(id)
 }
 
-func (p *planet) fetchFilms(planets []models.Planet) error {
+func (p *planet) fetchFilms(planets []*models.Planet) error {
+
 	group := new(sync.WaitGroup)
 	mutex := new(sync.Mutex)
 
@@ -71,9 +90,9 @@ func (p *planet) fetchFilms(planets []models.Planet) error {
 	for i := range planets {
 		group.Add(1)
 
-		planet := planets[i]
-		go func() {
+		go func(planet *models.Planet) {
 			defer mutex.Unlock()
+			defer group.Done()
 
 			films, e := p.client.PlanetFilms(planet.Name)
 
@@ -83,9 +102,7 @@ func (p *planet) fetchFilms(planets []models.Planet) error {
 
 			mutex.Lock()
 			planet.Films.From(films)
-
-			group.Done()
-		}()
+		}(planets[i])
 	}
 
 	group.Wait()
