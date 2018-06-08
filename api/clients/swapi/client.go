@@ -68,9 +68,9 @@ func (s *client) films(urls []string) ([]Film, error) {
 	for i := range urls {
 		group.Add(1)
 
-		url := urls[i]
-		go func() {
+		go func(url string) {
 			defer mutex.Unlock()
+			defer group.Done()
 
 			film, e := s.film(url)
 
@@ -81,8 +81,7 @@ func (s *client) films(urls []string) ([]Film, error) {
 			mutex.Lock()
 			films = append(films, *film)
 
-			group.Done()
-		}()
+		}(urls[i])
 	}
 
 	group.Wait()

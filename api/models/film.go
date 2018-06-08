@@ -18,12 +18,17 @@ func (f *Film) From(raw *swapi.Film) {
 type Films []Film
 
 //From maps swapi film collection model to application model
-func (f Films) From(raw []swapi.Film) {
+func (f *Films) From(raw []swapi.Film) {
+	if f == nil {
+		temp := make(Films, 0)
+		f = &temp
+	}
+
 	for _, item := range raw {
 
 		var film Film
 		film.From(&item)
 
-		f = append(f, film)
+		*f = append(*f, film)
 	}
 }
