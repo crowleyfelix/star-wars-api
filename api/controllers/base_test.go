@@ -91,7 +91,7 @@ var _ = Describe("Controller", func() {
 	BeforeEach(func() {
 		base = &baseController{context}
 
-		context.On("JSON", http.StatusMethodNotAllowed, Response{"Method not allowed!"}).
+		context.On("JSON", http.StatusMethodNotAllowed, Response{Message: "Method not allowed!"}).
 			Return().Once()
 	})
 	Describe("Get()", func() {

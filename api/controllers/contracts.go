@@ -1,5 +1,6 @@
 package controllers
 
 type Response struct {
-	Message string `json:"message"`
+	Data    map[string]interface{} `json:"data"`
+	Message string                 `json:"message"`
 }

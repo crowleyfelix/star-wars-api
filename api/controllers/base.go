@@ -25,7 +25,7 @@ func invokeMethod(c *gin.Context, h Controller) {
 	case http.MethodDelete:
 		h.Delete()
 	default:
-		c.JSON(http.StatusMethodNotAllowed, Response{"Method not allowed"})
+		c.JSON(http.StatusMethodNotAllowed, Response{Message: "Method not allowed"})
 	}
 }
 
@@ -50,5 +50,5 @@ func (b *baseController) Delete() {
 }
 
 func (b *baseController) notAllowed() {
-	b.context.JSON(http.StatusMethodNotAllowed, Response{"Method not allowed!"})
+	b.context.JSON(http.StatusMethodNotAllowed, Response{Message: "Method not allowed!"})
 }
