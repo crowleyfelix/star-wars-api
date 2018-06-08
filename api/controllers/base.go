@@ -1,11 +1,20 @@
 package controllers
 
 import (
+	"fmt"
 	"net/http"
+	"strconv"
+	"strings"
+
+	"github.com/crowleyfelix/star-wars-api/api/models"
 
 	"github.com/crowleyfelix/star-wars-api/api/errors"
 
 	"github.com/gin-gonic/gin"
+)
+
+const (
+	paginationQuery = "%s&page=%d&page_size=%d"
 )
 
 //Controller exposes api controller methdos
@@ -68,9 +77,74 @@ func (b *baseController) fail(err errors.Error) {
 	})
 }
 
-func (b *baseController) ok(data interface{}) {
+func (b *baseController) ok(data interface{}, page *models.Page) {
+
+	if data == nil {
+		data = make(map[string]interface{})
+	}
+
 	b.context.JSON(http.StatusOK, Response{
+		Page:     b.calculatePage(page),
 		Data:     data,
 		Messages: make([]string, 0),
 	})
+}
+
+func (b *baseController) created(data interface{}, page *models.Page) {
+
+	if data == nil {
+		data = make(map[string]interface{})
+	}
+
+	b.context.JSON(http.StatusCreated, Response{
+		Data:     data,
+		Messages: make([]string, 0),
+	})
+}
+
+func (b *baseController) calculatePage(page *models.Page) *Page {
+
+	if page == nil {
+		return nil
+	}
+
+	url := b.context.(*gin.Context).Request.URL
+
+	path := url.RawPath
+	for _, query := range strings.Split(url.RawQuery, "&") {
+
+		if query == "page" || query == "page_sice" {
+			continue
+		}
+
+		path = fmt.Sprintf("&%s", query)
+	}
+
+	pg := &Page{
+		Current: fmt.Sprintf(paginationQuery, path, page.Current, page.MaxSize),
+		MaxSize: page.MaxSize,
+		Size:    page.Size,
+	}
+
+	if page.Previous != nil {
+		previous := fmt.Sprintf(paginationQuery, path, page.Previous, page.MaxSize)
+		pg.Previous = &previous
+	}
+
+	if page.Next != nil {
+		next := fmt.Sprintf(paginationQuery, path, page.Next, page.MaxSize)
+		pg.Next = &next
+	}
+
+	return pg
+}
+
+func (b *baseController) intParam(name string) (*int, errors.Error) {
+	n, err := strconv.Atoi(b.context.Param(name))
+
+	if err != nil {
+		return nil, errors.NewBadRequest(fmt.Sprintf("invalid param sent %s", name))
+	}
+
+	return &n, nil
 }

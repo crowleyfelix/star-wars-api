@@ -70,7 +70,7 @@ func (s *client) PlanetFilms(name string) ([]Film, errors.Error) {
 	}
 
 	if len(planets) != 1 {
-		glog.Errorf("Planet %s was not found", name)
+		glog.Errorf("Planet %s was not found on swapi", name)
 		return nil, errors.NewNotFound(fmt.Sprintf("Planet %s was not found", name))
 	}
 
