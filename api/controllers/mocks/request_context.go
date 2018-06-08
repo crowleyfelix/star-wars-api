@@ -8,6 +8,20 @@ type RequestContext struct {
 	mock.Mock
 }
 
+// BindJSON provides a mock function with given fields: _a0
+func (_m *RequestContext) BindJSON(_a0 interface{}) error {
+	ret := _m.Called(_a0)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(interface{}) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // BindQuery provides a mock function with given fields: _a0
 func (_m *RequestContext) BindQuery(_a0 interface{}) error {
 	ret := _m.Called(_a0)
@@ -50,6 +64,20 @@ func (_m *RequestContext) NegotiateFormat(_a0 ...string) string {
 	var r0 string
 	if rf, ok := ret.Get(0).(func(...string) string); ok {
 		r0 = rf(_a0...)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
+// Param provides a mock function with given fields: _a0
+func (_m *RequestContext) Param(_a0 string) string {
+	ret := _m.Called(_a0)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string) string); ok {
+		r0 = rf(_a0)
 	} else {
 		r0 = ret.Get(0).(string)
 	}
