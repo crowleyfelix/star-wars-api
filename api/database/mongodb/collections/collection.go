@@ -1,7 +1,7 @@
 package collections
 
 import (
-	"errors"
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 
 	"github.com/golang/glog"
 
@@ -17,20 +17,20 @@ type collection struct {
 	CounterID  string
 }
 
-func (c *collection) execute(operation func(*mgo.Collection) error) error {
+func (c *collection) execute(operation func(*mgo.Collection) error) errors.Error {
 	session, err := mongodb.Pool().Session()
 
 	if err != nil {
-		return err
+		return c.parseError(err)
 	}
 
 	defer mongodb.Pool().Release(session)
 
 	col := session.DB(c.DataBase).C(c.Collection)
-	return operation(col)
+	return c.parseError(operation(col))
 }
 
-func (c *collection) calculateNextID(db *mgo.Database) (int, error) {
+func (c *collection) calculateNextID(db *mgo.Database) (int, errors.Error) {
 	var counter models.Counter
 
 	change := mgo.Change{
@@ -51,21 +51,21 @@ func (c *collection) calculateNextID(db *mgo.Database) (int, error) {
 		Apply(change, &counter)
 
 	if err != nil {
-		return 0, err
+		return 0, c.parseError(err)
 	}
 
 	if info.Matched == 0 {
-		return 0, errors.New("failed calculating id sequence")
+		return 0, errors.NewInternalServer("failed calculating id sequence")
 	}
 
 	return counter.SequenceValue, nil
 }
 
-func (c *collection) calculatePage(collection *mgo.Collection, query interface{}, pagination *Pagination, totalItems int) (*models.Page, error) {
+func (c *collection) calculatePage(collection *mgo.Collection, query interface{}, pagination *Pagination, totalItems int) (*models.Page, errors.Error) {
 	count, err := collection.Find(query).Count()
 
 	if err != nil {
-		return nil, err
+		return nil, c.parseError(err)
 	}
 
 	page := &models.Page{
@@ -82,9 +82,29 @@ func (c *collection) calculatePage(collection *mgo.Collection, query interface{}
 		page.Next = &next
 	}
 
-	return page, err
+	return page, nil
 }
 
 func (c *collection) calculateOffset(pagination *Pagination) int {
 	return (pagination.Page - 1) * pagination.Size
+}
+
+func (c *collection) parseError(err error) errors.Error {
+
+	if err == nil {
+		return nil
+	}
+
+	switch err {
+	case mgo.ErrNotFound:
+		return errors.NewNotFound(err.Error())
+	}
+
+	switch err.(type) {
+	case *mgo.QueryError:
+	case *mgo.LastError:
+		return errors.NewUnprocessableEntity(err.Error())
+	}
+
+	return errors.NewInternalServer(err.Error())
 }

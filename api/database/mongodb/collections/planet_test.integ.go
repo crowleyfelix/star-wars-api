@@ -6,6 +6,7 @@ import (
 	"strings"
 
 	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/satori/go.uuid"
@@ -52,7 +53,7 @@ var _ = Describe("Planets", func() {
 				planet.Name = strings.ToLower(planet.Name)
 			})
 			It("should return an error", func() {
-				Expect(err).ToNot(BeNil())
+				Expect(err).To(BeAssignableToTypeOf(new(errors.UnprocessableEntity)))
 			})
 		})
 	})
@@ -144,7 +145,7 @@ var _ = Describe("Planets", func() {
 				planet.ID = planet.ID + 1
 			})
 			It("should return an error", func() {
-				Expect(err).ToNot(BeNil())
+				Expect(err).To(BeAssignableToTypeOf(new(errors.NotFound)))
 			})
 		})
 	})
@@ -167,7 +168,7 @@ var _ = Describe("Planets", func() {
 				planet.ID = planet.ID + 1
 			})
 			It("should return an error", func() {
-				Expect(err).ToNot(BeNil())
+				Expect(err).To(BeAssignableToTypeOf(new(errors.NotFound)))
 			})
 		})
 	})

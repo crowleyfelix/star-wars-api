@@ -1,7 +1,9 @@
 package collections
 
 import (
-	"errors"
+	"fmt"
+
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 
 	"github.com/crowleyfelix/star-wars-api/api/configuration"
 	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
@@ -12,11 +14,11 @@ import (
 
 //Planets exposes methods of planet CRUD operations
 type Planets interface {
-	Insert(*models.Planet) error
-	Find(*PlanetSearchQuery, *Pagination) (*models.PlanetPage, error)
-	FindByID(int) (*models.Planet, error)
-	Update(*models.Planet) error
-	Delete(int) error
+	Insert(*models.Planet) errors.Error
+	Find(*PlanetSearchQuery, *Pagination) (*models.PlanetPage, errors.Error)
+	FindByID(int) (*models.Planet, errors.Error)
+	Update(*models.Planet) errors.Error
+	Delete(int) errors.Error
 }
 
 type planets struct {
@@ -35,11 +37,11 @@ func NewPlanets() Planets {
 	}
 }
 
-func (pr *planets) Insert(planet *models.Planet) error {
+func (pr *planets) Insert(planet *models.Planet) errors.Error {
 	glog.Infof("Inserting planet %#v on database", planet)
 
 	return pr.execute(func(col *mgo.Collection) error {
-		var err error
+		var err errors.Error
 		planet.ID, err = pr.calculateNextID(col.Database)
 
 		if err != nil {
@@ -51,7 +53,7 @@ func (pr *planets) Insert(planet *models.Planet) error {
 	})
 }
 
-func (pr *planets) FindByID(id int) (*models.Planet, error) {
+func (pr *planets) FindByID(id int) (*models.Planet, errors.Error) {
 	glog.Infof("Finding planet %d on database", id)
 
 	query := &PlanetSearchQuery{
@@ -71,39 +73,38 @@ func (pr *planets) FindByID(id int) (*models.Planet, error) {
 
 	if page.Size == 0 {
 		glog.Errorf("Planet id %d was not found on database", id)
-
-		return nil, errors.New("not found")
+		return nil, errors.NewNotFound(fmt.Sprintf("Planet id %d was not found", id))
 	}
 
 	return &page.Planets[0], err
 }
 
-func (pr *planets) Find(query *PlanetSearchQuery, pagination *Pagination) (*models.PlanetPage, error) {
+func (pr *planets) Find(query *PlanetSearchQuery, pagination *Pagination) (*models.PlanetPage, errors.Error) {
 
 	var (
-		err  error
+		err  errors.Error
 		page = new(models.PlanetPage)
 	)
 
 	err = pr.execute(func(col *mgo.Collection) error {
-		err = col.
+		e := col.
 			Find(query).
 			Skip(pr.calculateOffset(pagination)).
 			Limit(pagination.Size).
 			All(&page.Planets)
 
-		if err != nil {
-			return err
+		if e != nil {
+			return e
 		}
 
-		page.Page, err = pr.calculatePage(col, query, pagination, len(page.Planets))
-		return err
+		page.Page, e = pr.calculatePage(col, query, pagination, len(page.Planets))
+		return e
 	})
 
 	return page, err
 }
 
-func (pr *planets) Update(planet *models.Planet) error {
+func (pr *planets) Update(planet *models.Planet) errors.Error {
 	glog.Infof("Updating planet %d on database", planet.ID)
 
 	query := bson.M{
@@ -115,7 +116,7 @@ func (pr *planets) Update(planet *models.Planet) error {
 	})
 }
 
-func (pr *planets) Delete(id int) error {
+func (pr *planets) Delete(id int) errors.Error {
 	glog.Infof("Deleting planet %d on database", id)
 
 	query := bson.M{

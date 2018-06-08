@@ -33,13 +33,14 @@ func (p *Planet) To() *models.Planet {
 
 //PlanetPage represents a star wars planet page
 type PlanetPage struct {
-	*models.Page
+	*Page
 	Planets []Planet `json:"planets"`
 }
 
 //From maps database planet model to application model
 func (p *PlanetPage) From(raw *models.PlanetPage) {
-	p.Page = raw.Page
+	temp := Page(*raw.Page)
+	p.Page = &temp
 	for _, item := range raw.Planets {
 		var planet Planet
 		planet.From(&item)

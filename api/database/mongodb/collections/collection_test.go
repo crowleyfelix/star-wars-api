@@ -1,7 +1,7 @@
 package collections
 
 import (
-	"errors"
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 
 	"github.com/bouk/monkey"
 	"github.com/crowleyfelix/star-wars-api/api/database/mongodb"
@@ -28,10 +28,9 @@ var _ = Describe("Collection", func() {
 	Describe("execute(): When executing operation", func() {
 		var (
 			actualErr     error
-			expectedErr   error
 			mockSession   = new(mgo.Session)
 			mockOperation = func(c *mgo.Collection) error {
-				return expectedErr
+				return errors.Build(0)
 			}
 		)
 
@@ -40,11 +39,10 @@ var _ = Describe("Collection", func() {
 		})
 		Context("and failed creating session", func() {
 			BeforeEach(func() {
-				expectedErr = errors.New("error")
-				mockPool.On("Session").Return(nil, expectedErr).Once()
+				mockPool.On("Session").Return(nil, errors.Build(0)).Once()
 			})
 			It("should return an error", func() {
-				Expect(actualErr).To(Equal(expectedErr))
+				Expect(actualErr).To(BeAssignableToTypeOf(new(errors.InternalServer)))
 			})
 		})
 		Context("and success creating session", func() {
@@ -53,7 +51,7 @@ var _ = Describe("Collection", func() {
 				mockPool.On("Release", mockSession).Return().Once()
 			})
 			It("should return operation result", func() {
-				Expect(actualErr).To(Equal(expectedErr))
+				Expect(actualErr).To(BeAssignableToTypeOf(new(errors.InternalServer)))
 			})
 		})
 	})

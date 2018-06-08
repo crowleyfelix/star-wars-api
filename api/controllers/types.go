@@ -7,4 +7,7 @@ type RequestContext interface {
 	JSON(int, interface{})
 	Header(string, string)
 	Data(int, string, []byte)
+	BindQuery(interface{}) error
+	BindJSON(interface{}) error
+	Param(string) string
 }

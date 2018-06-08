@@ -8,6 +8,20 @@ type RequestContext struct {
 	mock.Mock
 }
 
+// BindQuery provides a mock function with given fields: _a0
+func (_m *RequestContext) BindQuery(_a0 interface{}) error {
+	ret := _m.Called(_a0)
+
+	var r0 error
+	if rf, ok := ret.Get(0).(func(interface{}) error); ok {
+		r0 = rf(_a0)
+	} else {
+		r0 = ret.Error(0)
+	}
+
+	return r0
+}
+
 // Data provides a mock function with given fields: _a0, _a1, _a2
 func (_m *RequestContext) Data(_a0 int, _a1 string, _a2 []byte) {
 	_m.Called(_a0, _a1, _a2)
