@@ -1,11 +1,12 @@
 package swapi
 
 import (
-	"errors"
 	"fmt"
 
 	"encoding/json"
 	"sync"
+
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 
 	"github.com/golang/glog"
 	"github.com/levigross/grequests"
@@ -13,8 +14,8 @@ import (
 
 //Client exposes swapi client methods
 type Client interface {
-	Endpoints() (map[string]interface{}, error)
-	PlanetFilms(name string) ([]Film, error)
+	Endpoints() (map[string]interface{}, errors.Error)
+	PlanetFilms(name string) ([]Film, errors.Error)
 }
 
 type client struct{}
@@ -24,26 +25,25 @@ func New() Client {
 	return new(client)
 }
 
-func (s *client) Endpoints() (map[string]interface{}, error) {
+func (s *client) Endpoints() (map[string]interface{}, errors.Error) {
 	endpoints := make(map[string]interface{})
 
 	resp, err := grequests.Get(swapiURL, nil)
 
 	if err != nil {
 		glog.Errorf("Failed on requesting to swapi")
-
-		return nil, err
+		return nil, errors.NewCallout(err.Error())
 	}
 
 	if err = resp.JSON(&endpoints); err != nil {
 		glog.Errorf("Failed on deserializing swapi response")
-		return nil, err
+		return nil, errors.NewSerialization(err.Error())
 	}
 
-	return endpoints, err
+	return endpoints, nil
 }
 
-func (s *client) PlanetFilms(name string) ([]Film, error) {
+func (s *client) PlanetFilms(name string) ([]Film, errors.Error) {
 	glog.Infof("Search for planet %s on swapi", name)
 
 	var page Page
@@ -56,33 +56,32 @@ func (s *client) PlanetFilms(name string) ([]Film, error) {
 
 	if err != nil {
 		glog.Errorf("Failed on requesting to swapi")
-
-		return nil, err
+		return nil, errors.NewCallout(err.Error())
 	}
 
 	if err = resp.JSON(&page); err != nil {
 		glog.Errorf("Failed on deserializing swapi response")
-		return nil, err
+		return nil, errors.NewSerialization(err.Error())
 	}
 
 	if err = json.Unmarshal(page.Results, &planets); err != nil {
 		glog.Errorf("Failed on deserializing planets result")
-		return nil, err
+		return nil, errors.NewSerialization(err.Error())
 	}
 
 	if len(planets) != 1 {
 		glog.Errorf("Planet %s was not found", name)
-		return nil, errors.New("not found")
+		return nil, errors.NewNotFound(fmt.Sprintf("Planet %s was not found", name))
 	}
 
 	return s.films(planets[0].Films)
 }
 
-func (s *client) films(urls []string) ([]Film, error) {
+func (s *client) films(urls []string) ([]Film, errors.Error) {
 	group := new(sync.WaitGroup)
 	mutex := new(sync.Mutex)
 
-	var err error
+	var err errors.Error
 	var films []Film
 
 	for i := range urls {
@@ -112,7 +111,7 @@ func (s *client) films(urls []string) ([]Film, error) {
 	return films, nil
 }
 
-func (s *client) film(url string) (*Film, error) {
+func (s *client) film(url string) (*Film, errors.Error) {
 	glog.Infof("Search for film in %s url", url)
 
 	var film Film
@@ -121,17 +120,17 @@ func (s *client) film(url string) (*Film, error) {
 
 	if err != nil {
 		glog.Errorf("Failed on requesting to swapi")
-		return nil, err
+		return nil, errors.NewCallout(err.Error())
 	}
 
 	if !resp.Ok {
-		glog.Errorf("Film %s was not found", url)
-		return nil, errors.New("not found")
+		glog.Errorf("Film %s responded with status code %d", url, resp.StatusCode)
+		return nil, errors.Build(resp.StatusCode)
 	}
 
 	if err = resp.JSON(&film); err != nil {
 		glog.Errorf("Failed on deserializing swapi response")
-		return nil, err
+		return nil, errors.NewSerialization(err.Error())
 	}
 
 	return &film, nil

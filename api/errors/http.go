@@ -72,7 +72,7 @@ func NewMethodNotAllowed(messages ...string) *MethodNotAllowed {
 	return &MethodNotAllowed{
 		httpError{
 			http.StatusMethodNotAllowed,
-			new("Method not alowed.", messages...),
+			new("Method not allowed.", messages...),
 		},
 	}
 }

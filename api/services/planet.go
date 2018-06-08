@@ -5,15 +5,16 @@ import (
 
 	"github.com/crowleyfelix/star-wars-api/api/clients/swapi"
 	mongodb "github.com/crowleyfelix/star-wars-api/api/database/mongodb/collections"
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 	"github.com/crowleyfelix/star-wars-api/api/models"
 )
 
 //Planet exposes necessary methods of a planet service
 type Planet interface {
-	Create(*models.Planet) error
-	Get(int) (*models.Planet, error)
-	Search(*PlanetSearchParams, *Pagination) (*models.PlanetPage, error)
-	Remove(int) error
+	Create(*models.Planet) errors.Error
+	Get(int) (*models.Planet, errors.Error)
+	Search(*PlanetSearchParams, *Pagination) (*models.PlanetPage, errors.Error)
+	Remove(int) errors.Error
 }
 
 type planet struct {
@@ -29,11 +30,11 @@ func NewPlanet() Planet {
 	}
 }
 
-func (p *planet) Create(data *models.Planet) error {
+func (p *planet) Create(data *models.Planet) errors.Error {
 	return p.database.Insert(data.To())
 }
 
-func (p *planet) Get(id int) (*models.Planet, error) {
+func (p *planet) Get(id int) (*models.Planet, errors.Error) {
 	raw, err := p.database.FindByID(id)
 
 	if err != nil {
@@ -54,7 +55,7 @@ func (p *planet) Get(id int) (*models.Planet, error) {
 	return &data, nil
 }
 
-func (p *planet) Search(params *PlanetSearchParams, pagination *Pagination) (*models.PlanetPage, error) {
+func (p *planet) Search(params *PlanetSearchParams, pagination *Pagination) (*models.PlanetPage, errors.Error) {
 	raw, err := p.database.Find(&params.PlanetSearchQuery, &pagination.Pagination)
 
 	if err != nil {
@@ -76,16 +77,16 @@ func (p *planet) Search(params *PlanetSearchParams, pagination *Pagination) (*mo
 	return page, nil
 }
 
-func (p *planet) Remove(id int) error {
+func (p *planet) Remove(id int) errors.Error {
 	return p.database.Delete(id)
 }
 
-func (p *planet) fetchFilms(planets []*models.Planet) error {
+func (p *planet) fetchFilms(planets []*models.Planet) errors.Error {
 
 	group := new(sync.WaitGroup)
 	mutex := new(sync.Mutex)
 
-	var err error
+	var err errors.Error
 
 	for i := range planets {
 		group.Add(1)

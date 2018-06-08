@@ -2,6 +2,7 @@
 package mocks
 
 import collections "github.com/crowleyfelix/star-wars-api/api/database/mongodb/collections"
+import errors "github.com/crowleyfelix/star-wars-api/api/errors"
 import mock "github.com/stretchr/testify/mock"
 import models "github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
 
@@ -11,21 +12,23 @@ type Planets struct {
 }
 
 // Delete provides a mock function with given fields: _a0
-func (_m *Planets) Delete(_a0 int) error {
+func (_m *Planets) Delete(_a0 int) errors.Error {
 	ret := _m.Called(_a0)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(int) error); ok {
+	var r0 errors.Error
+	if rf, ok := ret.Get(0).(func(int) errors.Error); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(errors.Error)
+		}
 	}
 
 	return r0
 }
 
 // Find provides a mock function with given fields: _a0, _a1
-func (_m *Planets) Find(_a0 *collections.PlanetSearchQuery, _a1 *collections.Pagination) (*models.PlanetPage, error) {
+func (_m *Planets) Find(_a0 *collections.PlanetSearchQuery, _a1 *collections.Pagination) (*models.PlanetPage, errors.Error) {
 	ret := _m.Called(_a0, _a1)
 
 	var r0 *models.PlanetPage
@@ -37,18 +40,20 @@ func (_m *Planets) Find(_a0 *collections.PlanetSearchQuery, _a1 *collections.Pag
 		}
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(*collections.PlanetSearchQuery, *collections.Pagination) error); ok {
+	var r1 errors.Error
+	if rf, ok := ret.Get(1).(func(*collections.PlanetSearchQuery, *collections.Pagination) errors.Error); ok {
 		r1 = rf(_a0, _a1)
 	} else {
-		r1 = ret.Error(1)
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(errors.Error)
+		}
 	}
 
 	return r0, r1
 }
 
 // FindByID provides a mock function with given fields: _a0
-func (_m *Planets) FindByID(_a0 int) (*models.Planet, error) {
+func (_m *Planets) FindByID(_a0 int) (*models.Planet, errors.Error) {
 	ret := _m.Called(_a0)
 
 	var r0 *models.Planet
@@ -60,39 +65,45 @@ func (_m *Planets) FindByID(_a0 int) (*models.Planet, error) {
 		}
 	}
 
-	var r1 error
-	if rf, ok := ret.Get(1).(func(int) error); ok {
+	var r1 errors.Error
+	if rf, ok := ret.Get(1).(func(int) errors.Error); ok {
 		r1 = rf(_a0)
 	} else {
-		r1 = ret.Error(1)
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(errors.Error)
+		}
 	}
 
 	return r0, r1
 }
 
 // Insert provides a mock function with given fields: _a0
-func (_m *Planets) Insert(_a0 *models.Planet) error {
+func (_m *Planets) Insert(_a0 *models.Planet) errors.Error {
 	ret := _m.Called(_a0)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.Planet) error); ok {
+	var r0 errors.Error
+	if rf, ok := ret.Get(0).(func(*models.Planet) errors.Error); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(errors.Error)
+		}
 	}
 
 	return r0
 }
 
 // Update provides a mock function with given fields: _a0
-func (_m *Planets) Update(_a0 *models.Planet) error {
+func (_m *Planets) Update(_a0 *models.Planet) errors.Error {
 	ret := _m.Called(_a0)
 
-	var r0 error
-	if rf, ok := ret.Get(0).(func(*models.Planet) error); ok {
+	var r0 errors.Error
+	if rf, ok := ret.Get(0).(func(*models.Planet) errors.Error); ok {
 		r0 = rf(_a0)
 	} else {
-		r0 = ret.Error(0)
+		if ret.Get(0) != nil {
+			r0 = ret.Get(0).(errors.Error)
+		}
 	}
 
 	return r0

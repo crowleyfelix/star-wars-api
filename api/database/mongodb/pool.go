@@ -2,13 +2,14 @@ package mongodb
 
 import (
 	"github.com/crowleyfelix/star-wars-api/api/configuration"
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 	"github.com/golang/glog"
 	"gopkg.in/mgo.v2"
 )
 
 //SessionPool exposes session manager methods
 type SessionPool interface {
-	Session() (*mgo.Session, error)
+	Session() (*mgo.Session, errors.Error)
 	Release(*mgo.Session)
 }
 
@@ -28,7 +29,7 @@ func Pool() SessionPool {
 	return sessionPool
 }
 
-func (p *pool) Session() (*mgo.Session, error) {
+func (p *pool) Session() (*mgo.Session, errors.Error) {
 	var err error
 
 	if p.session == nil {
@@ -40,7 +41,7 @@ func (p *pool) Session() (*mgo.Session, error) {
 		if err != nil {
 			glog.Error("Failed on creating session")
 
-			return nil, err
+			return nil, errors.NewInternalServer(err.Error())
 		}
 	}
 
