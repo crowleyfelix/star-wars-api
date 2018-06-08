@@ -1,12 +1,11 @@
 package services
 
 import (
-	"errors"
-
 	swapi "github.com/crowleyfelix/star-wars-api/api/clients/swapi"
 	swapiMocks "github.com/crowleyfelix/star-wars-api/api/clients/swapi/mocks"
 	mongodbMocks "github.com/crowleyfelix/star-wars-api/api/database/mongodb/collections/mocks"
 	mongoModels "github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
+	"github.com/crowleyfelix/star-wars-api/api/errors"
 	"github.com/crowleyfelix/star-wars-api/api/models"
 
 	. "github.com/crowleyfelix/star-wars-api/api/testing"
@@ -51,7 +50,7 @@ var _ = Describe("Planet", func() {
 		)
 
 		var (
-			actualError   error
+			actualError   errors.Error
 			expectedError error
 		)
 
@@ -59,7 +58,7 @@ var _ = Describe("Planet", func() {
 			LoadJSON("fixtures/model-planet.json", &modelPlanet)
 			LoadJSON("fixtures/mongo-planet.json", &mongoPlanet)
 
-			expectedError = errors.New("error")
+			expectedError = errors.Build(0)
 			databaseMock.On("Insert", &mongoPlanet).Return(expectedError).Once()
 
 			actualError = pl.Create(&modelPlanet)
@@ -77,9 +76,9 @@ var _ = Describe("Planet", func() {
 
 		var (
 			actualPlanet   *models.Planet
-			actualError    error
+			actualError    errors.Error
 			expectedPlanet *models.Planet
-			expectedError  error
+			expectedError  errors.Error
 		)
 
 		JustBeforeEach(func() {
@@ -88,7 +87,7 @@ var _ = Describe("Planet", func() {
 
 		Context("and failed on find planet in database", func() {
 			BeforeEach(func() {
-				expectedError = errors.New("error")
+				expectedError = errors.Build(0)
 				databaseMock.On("FindByID", id).Return(nil, expectedError).Once()
 			})
 
@@ -109,7 +108,7 @@ var _ = Describe("Planet", func() {
 			})
 			Context("and failed on fetch planet films", func() {
 				BeforeEach(func() {
-					expectedError = errors.New("error")
+					expectedError = errors.Build(0)
 					clientMock.On("PlanetFilms", mongoPlanet.Name).Return(nil, expectedError).Once()
 				})
 				It("should return an error", func() {
@@ -140,7 +139,7 @@ var _ = Describe("Planet", func() {
 
 		var (
 			actualPage    *models.PlanetPage
-			actualError   error
+			actualError   errors.Error
 			expectedPage  *models.PlanetPage
 			expectedError error
 		)
@@ -151,7 +150,7 @@ var _ = Describe("Planet", func() {
 
 		Context("and failed on find planets in database", func() {
 			BeforeEach(func() {
-				expectedError = errors.New("error")
+				expectedError = errors.Build(0)
 				databaseMock.
 					On("Find", &params.PlanetSearchQuery, &pagination.Pagination).
 					Return(nil, expectedError).Once()
@@ -176,7 +175,7 @@ var _ = Describe("Planet", func() {
 			})
 			Context("and failed on fetch planet films", func() {
 				BeforeEach(func() {
-					expectedError = errors.New("error")
+					expectedError = errors.Build(0)
 					clientMock.
 						On("PlanetFilms", mongoPage.Planets[0].Name).
 						Return(nil, expectedError).Once()
@@ -209,12 +208,12 @@ var _ = Describe("Planet", func() {
 		)
 
 		var (
-			actualError   error
+			actualError   errors.Error
 			expectedError error
 		)
 
 		BeforeEach(func() {
-			expectedError = errors.New("error")
+			expectedError = errors.Build(0)
 			databaseMock.On("Delete", id).Return(expectedError).Once()
 
 			actualError = pl.Remove(id)
