@@ -3,6 +3,8 @@ package controllers
 import (
 	"net/http"
 
+	"github.com/crowleyfelix/star-wars-api/api/errors"
+
 	"github.com/gin-gonic/gin"
 )
 
@@ -25,7 +27,7 @@ func invokeMethod(c *gin.Context, h Controller) {
 	case http.MethodDelete:
 		h.Delete()
 	default:
-		c.JSON(http.StatusMethodNotAllowed, Response{Message: "Method not allowed"})
+		c.JSON(http.StatusMethodNotAllowed, Response{Messages: []string{"Method not allowed"}})
 	}
 }
 
@@ -50,5 +52,25 @@ func (b *baseController) Delete() {
 }
 
 func (b *baseController) notAllowed() {
-	b.context.JSON(http.StatusMethodNotAllowed, Response{Message: "Method not allowed!"})
+	b.fail(errors.NewMethodNotAllowed())
+}
+
+func (b *baseController) fail(err errors.Error) {
+	statusCode := http.StatusInternalServerError
+
+	if value, ok := err.(errors.HTTPError); ok {
+		statusCode = value.StatusCode()
+	}
+
+	b.context.JSON(statusCode, Response{
+		Data:     make(map[string]interface{}),
+		Messages: err.Messages(),
+	})
+}
+
+func (b *baseController) ok(data interface{}) {
+	b.context.JSON(http.StatusOK, Response{
+		Data:     data,
+		Messages: make([]string, 0),
+	})
 }

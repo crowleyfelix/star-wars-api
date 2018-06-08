@@ -11,15 +11,9 @@ func Build(statusCode int, messages ...string) HTTPError {
 		return NewInternalServer(messages...)
 	case http.StatusBadRequest:
 		return NewBadRequest(messages...)
-	case http.StatusUnauthorized:
-		return NewUnauthorized(messages...)
-	case http.StatusForbidden:
-		return NewForbidden(messages...)
 	case http.StatusNotFound:
 		return NewNotFound(messages...)
 	case http.StatusUnprocessableEntity:
 		return NewUnprocessableEntity(messages...)
-	case http.StatusServiceUnavailable:
-		return NewUnavailable(messages...)
 	}
 }

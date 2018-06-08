@@ -47,36 +47,6 @@ func NewInternalServer(messages ...string) *InternalServer {
 	}
 }
 
-//Unauthorized represents a HTTP status code 401 error
-type Unauthorized struct {
-	httpError
-}
-
-//NewUnauthorized constructs a Unauthorized HTTP error
-func NewUnauthorized(messages ...string) *Unauthorized {
-	return &Unauthorized{
-		httpError{
-			http.StatusUnauthorized,
-			new("Unauthorized.", messages...),
-		},
-	}
-}
-
-//Forbidden represents a HTTP status code 403 error
-type Forbidden struct {
-	httpError
-}
-
-//NewForbidden constructs a Forbidden HTTP error
-func NewForbidden(messages ...string) *Forbidden {
-	return &Forbidden{
-		httpError{
-			http.StatusForbidden,
-			new("Forbidden.", messages...),
-		},
-	}
-}
-
 //UnprocessableEntity represents a HTTP status code 422 error
 type UnprocessableEntity struct {
 	httpError
@@ -92,17 +62,17 @@ func NewUnprocessableEntity(messages ...string) *UnprocessableEntity {
 	}
 }
 
-//Unavailable represents a HTTP status code 503 error
-type Unavailable struct {
+//MethodNotAllowed represents a HTTP status code 422 error
+type MethodNotAllowed struct {
 	httpError
 }
 
-//NewUnavailable constructs a Unavailable HTTP error
-func NewUnavailable(messages ...string) *Unavailable {
-	return &Unavailable{
+//NewMethodNotAllowed constructs a MethodNotAllowed HTTP error
+func NewMethodNotAllowed(messages ...string) *MethodNotAllowed {
+	return &MethodNotAllowed{
 		httpError{
-			http.StatusServiceUnavailable,
-			new("Service is currently unavailable.", messages...),
+			http.StatusMethodNotAllowed,
+			new("Method not alowed.", messages...),
 		},
 	}
 }
