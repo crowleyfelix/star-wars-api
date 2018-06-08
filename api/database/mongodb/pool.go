@@ -33,7 +33,7 @@ func (p *pool) Session() (*mgo.Session, errors.Error) {
 	var err error
 
 	if p.session == nil {
-		gomol.Info("Creating new session")
+		gomol.Debug("Creating new session")
 
 		uri := configuration.Get().MongoDB.URI
 		p.session, err = mgo.Dial(uri)
@@ -52,7 +52,7 @@ func (p *pool) Session() (*mgo.Session, errors.Error) {
 }
 
 func (p *pool) Release(session *mgo.Session) {
-	gomol.Info("Releasing session")
+	gomol.Debug("Releasing session")
 
 	<-p.active
 

@@ -24,6 +24,7 @@ func NewServer() Server {
 }
 
 func (s *server) Start() {
+	setUp()
 	s.registerRoutes()
 
 	port := fmt.Sprintf(":%d", configuration.Get().Port)

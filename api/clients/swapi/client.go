@@ -45,7 +45,7 @@ func (s *client) Endpoints() (map[string]interface{}, errors.Error) {
 }
 
 func (s *client) Planet(name string) (*Planet, errors.Error) {
-	gomol.Infof("Searching for planet %s on swapi", name)
+	gomol.Debugf("Searching for planet %s on swapi", name)
 
 	var page Page
 	var planets []Planet
@@ -79,7 +79,7 @@ func (s *client) Planet(name string) (*Planet, errors.Error) {
 }
 
 func (s *client) PlanetFilms(name string) ([]Film, errors.Error) {
-	gomol.Infof("Search for planet %s on swapi", name)
+	gomol.Debugf("Search for planet %s on swapi", name)
 
 	planet, err := s.Planet(name)
 
@@ -125,7 +125,7 @@ func (s *client) films(urls []string) ([]Film, errors.Error) {
 }
 
 func (s *client) film(url string) (*Film, errors.Error) {
-	gomol.Infof("Search for film in %s url", url)
+	gomol.Debugf("Search for film in %s", url)
 
 	var film Film
 

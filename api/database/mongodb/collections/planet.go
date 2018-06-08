@@ -38,7 +38,7 @@ func NewPlanets() Planets {
 }
 
 func (pr *planets) Insert(planet *models.Planet) errors.Error {
-	gomol.Infof("Inserting planet %#v on database", planet)
+	gomol.Debugf("Inserting planet %#v on database", planet)
 
 	return pr.execute(func(col *mgo.Collection) error {
 		var err errors.Error
@@ -54,7 +54,7 @@ func (pr *planets) Insert(planet *models.Planet) errors.Error {
 }
 
 func (pr *planets) FindByID(id int) (*models.Planet, errors.Error) {
-	gomol.Infof("Finding planet %d on database", id)
+	gomol.Debugf("Finding planet %d on database", id)
 
 	query := &PlanetSearchQuery{
 		ID: &id,
@@ -105,7 +105,7 @@ func (pr *planets) Find(query *PlanetSearchQuery, pagination *Pagination) (*mode
 }
 
 func (pr *planets) Update(planet *models.Planet) errors.Error {
-	gomol.Infof("Updating planet %d on database", planet.ID)
+	gomol.Debugf("Updating planet %d on database", planet.ID)
 
 	query := bson.M{
 		"_id": planet.ID,
@@ -117,7 +117,7 @@ func (pr *planets) Update(planet *models.Planet) errors.Error {
 }
 
 func (pr *planets) Delete(id int) errors.Error {
-	gomol.Infof("Deleting planet %d on database", id)
+	gomol.Debugf("Deleting planet %d on database", id)
 
 	query := bson.M{
 		"_id": id,

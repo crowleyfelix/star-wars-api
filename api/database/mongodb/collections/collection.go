@@ -42,7 +42,7 @@ func (c *collection) calculateNextID(db *mgo.Database) (int, errors.Error) {
 		ReturnNew: true,
 	}
 
-	gomol.Infof("Updating counter of %s: %#v", c.CounterID, change)
+	gomol.Debugf("Updating counter of %s: %#v", c.CounterID, change)
 
 	info, err := db.C("counters").
 		Find(bson.M{
