@@ -84,6 +84,11 @@ func (p *planet) Post() {
 		return
 	}
 
+	if err := p.service.Validate(&data); err != nil {
+		p.fail(err)
+		return
+	}
+
 	if err := p.service.Create(&data); err != nil {
 		p.fail(err)
 		return

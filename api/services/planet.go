@@ -1,6 +1,7 @@
 package services
 
 import (
+	"fmt"
 	"sync"
 
 	"github.com/crowleyfelix/star-wars-api/api/clients/swapi"
@@ -15,6 +16,7 @@ type Planet interface {
 	Get(int) (*models.Planet, errors.Error)
 	Search(*PlanetSearchParams, *Pagination) (*models.PlanetPage, errors.Error)
 	Remove(int) errors.Error
+	Validate(*models.Planet) errors.Error
 }
 
 type planet struct {
@@ -79,6 +81,16 @@ func (p *planet) Search(params *PlanetSearchParams, pagination *Pagination) (*mo
 
 func (p *planet) Remove(id int) errors.Error {
 	return p.database.Delete(id)
+}
+
+func (p *planet) Validate(data *models.Planet) errors.Error {
+	_, err := p.client.Planet(data.Name)
+
+	if _, ok := err.(*errors.NotFound); ok {
+		return errors.NewUnprocessableEntity(fmt.Sprintf("The planet %s is invalid", data.Name))
+	}
+
+	return err
 }
 
 func (p *planet) fetchFilms(planets []*models.Planet) errors.Error {

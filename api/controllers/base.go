@@ -3,8 +3,8 @@ package controllers
 import (
 	"fmt"
 	"net/http"
+	"regexp"
 	"strconv"
-	"strings"
 
 	"github.com/crowleyfelix/star-wars-api/api/models"
 
@@ -110,15 +110,10 @@ func (b *baseController) calculatePage(page *models.Page) *Page {
 
 	url := b.context.(*gin.Context).Request.URL
 
-	path := url.RawPath
-	for _, query := range strings.Split(url.RawQuery, "&") {
+	compiled, _ := regexp.Compile("((page=\\d+&?)|(page_size=\\d+&?))")
+	query := compiled.ReplaceAllString(url.RawQuery, "")
 
-		if query == "page" || query == "page_sice" {
-			continue
-		}
-
-		path = fmt.Sprintf("&%s", query)
-	}
+	path := fmt.Sprintf("%s?%s", url.Path, query)
 
 	pg := &Page{
 		Current: fmt.Sprintf(paginationQuery, path, page.Current, page.MaxSize),

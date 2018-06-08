@@ -15,6 +15,7 @@ import (
 //Client exposes swapi client methods
 type Client interface {
 	Endpoints() (map[string]interface{}, errors.Error)
+	Planet(name string) (*Planet, errors.Error)
 	PlanetFilms(name string) ([]Film, errors.Error)
 }
 
@@ -43,8 +44,8 @@ func (s *client) Endpoints() (map[string]interface{}, errors.Error) {
 	return endpoints, nil
 }
 
-func (s *client) PlanetFilms(name string) ([]Film, errors.Error) {
-	glog.Infof("Search for planet %s on swapi", name)
+func (s *client) Planet(name string) (*Planet, errors.Error) {
+	glog.Infof("Searching for planet %s on swapi", name)
 
 	var page Page
 	var planets []Planet
@@ -74,7 +75,19 @@ func (s *client) PlanetFilms(name string) ([]Film, errors.Error) {
 		return nil, errors.NewNotFound(fmt.Sprintf("Planet %s was not found", name))
 	}
 
-	return s.films(planets[0].Films)
+	return &planets[0], nil
+}
+
+func (s *client) PlanetFilms(name string) ([]Film, errors.Error) {
+	glog.Infof("Search for planet %s on swapi", name)
+
+	planet, err := s.Planet(name)
+
+	if err != nil {
+		return nil, err
+	}
+
+	return s.films(planet.Films)
 }
 
 func (s *client) films(urls []string) ([]Film, errors.Error) {
