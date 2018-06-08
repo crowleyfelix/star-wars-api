@@ -1,4 +1,4 @@
-package mongodb
+package collections
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestHandlers(t *testing.T) {
+func TestMongoDB(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "MongoDB Suite")
+	RunSpecs(t, "Collections Suite")
 }

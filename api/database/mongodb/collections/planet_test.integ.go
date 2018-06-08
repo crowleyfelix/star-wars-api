@@ -1,20 +1,20 @@
 //+build integration
 
-package mongodb
+package collections
 
 import (
 	"strings"
 
-	"github.com/crowleyfelix/star-wars-api/src/mongodb/models"
+	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/satori/go.uuid"
 )
 
-var _ = Describe("PlanetCollection", func() {
+var _ = Describe("Planets", func() {
 
 	var (
-		coll   = NewPlanetCollection()
+		coll   = NewPlanets()
 		planet *models.Planet
 		id     int
 		name   string

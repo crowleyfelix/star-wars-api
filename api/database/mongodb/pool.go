@@ -1,12 +1,13 @@
 package mongodb
 
 import (
-	"github.com/crowleyfelix/star-wars-api/src/configuration"
+	"github.com/crowleyfelix/star-wars-api/api/configuration"
 	"github.com/golang/glog"
 	"gopkg.in/mgo.v2"
 )
 
-type SessionManager interface {
+//SessionPool exposes session manager methods
+type SessionPool interface {
 	Session() (*mgo.Session, error)
 	Release(*mgo.Session)
 }
@@ -17,14 +18,14 @@ type pool struct {
 }
 
 //Pool returns mongodb session manager
-func Pool() SessionManager {
-	if sessionManager == nil {
+func Pool() SessionPool {
+	if sessionPool == nil {
 		config := configuration.Get().MongoDB
-		sessionManager = &pool{
+		sessionPool = &pool{
 			active: make(chan int, config.MaxPoolSize),
 		}
 	}
-	return sessionManager
+	return sessionPool
 }
 
 func (p *pool) Session() (*mgo.Session, error) {
@@ -44,7 +45,7 @@ func (p *pool) Session() (*mgo.Session, error) {
 	}
 
 	p.active <- 1
-	glog.Info("%d active sessions", len(p.active))
+	glog.Infof("%d active sessions", len(p.active))
 
 	return p.session.Copy(), nil
 }
@@ -54,6 +55,6 @@ func (p *pool) Release(session *mgo.Session) {
 
 	<-p.active
 
-	glog.Info("%d active sessions", len(p.active))
+	glog.Infof("%d active sessions", len(p.active))
 	session.Close()
 }

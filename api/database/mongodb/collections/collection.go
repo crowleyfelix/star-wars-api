@@ -1,11 +1,12 @@
-package mongodb
+package collections
 
 import (
 	"errors"
 
 	"github.com/golang/glog"
 
-	"github.com/crowleyfelix/star-wars-api/src/mongodb/models"
+	"github.com/crowleyfelix/star-wars-api/api/database/mongodb"
+	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )
@@ -17,13 +18,13 @@ type collection struct {
 }
 
 func (c *collection) execute(operation func(*mgo.Collection) error) error {
-	session, err := Pool().Session()
+	session, err := mongodb.Pool().Session()
 
 	if err != nil {
 		return err
 	}
 
-	defer Pool().Release(session)
+	defer mongodb.Pool().Release(session)
 
 	col := session.DB(c.DataBase).C(c.Collection)
 	return operation(col)

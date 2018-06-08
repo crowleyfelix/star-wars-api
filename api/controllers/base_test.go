@@ -11,7 +11,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/crowleyfelix/star-wars-api/src/controllers/mocks"
+	"github.com/crowleyfelix/star-wars-api/api/controllers/mocks"
 )
 
 var _ = Describe("Base", func() {
@@ -94,22 +94,22 @@ var _ = Describe("Controller", func() {
 		context.On("JSON", http.StatusMethodNotAllowed, Response{"Method not allowed!"}).
 			Return().Once()
 	})
-	Describe("Get", func() {
+	Describe("Get()", func() {
 		It("should respond a method not allowed status", func() {
 			base.Get()
 		})
 	})
-	Describe("Post", func() {
+	Describe("Post()", func() {
 		It("should respond a method not allowed status", func() {
 			base.Post()
 		})
 	})
-	Describe("Put", func() {
+	Describe("Put()", func() {
 		It("should respond a method not allowed status", func() {
 			base.Put()
 		})
 	})
-	Describe("Delete", func() {
+	Describe("Delete()", func() {
 		It("should respond a method not allowed status", func() {
 			base.Delete()
 		})

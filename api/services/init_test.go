@@ -1,4 +1,4 @@
-package controllers
+package services
 
 import (
 	"testing"
@@ -7,7 +7,7 @@ import (
 	. "github.com/onsi/gomega"
 )
 
-func TestHandlers(t *testing.T) {
+func TestServices(t *testing.T) {
 	RegisterFailHandler(Fail)
-	RunSpecs(t, "Controllers Suite")
+	RunSpecs(t, "Services Suite")
 }
