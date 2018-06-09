@@ -19,7 +19,11 @@ fmt:
 setup: dep
 
 run: dep
-	@go run api/main.go
+	@sudo docker container stop swapi-mongo > /dev/null
+	@sudo docker-compose up -d
+
+stop: 
+	@sudo docker-compose down
 
 check: setup
 	@gometalinter ./... --aggregate --fast $(MODIFIED_FILES)
@@ -30,16 +34,26 @@ deep-check: setup
 full-check: setup
 	@gometalinter ./... --aggregate
 
+docker-up: setup
+	@sudo docker build -f docker/Dockerfile-mongo --tag star-wars-api/mongo .
+	@sudo docker container start swapi-mongo || \
+		sudo docker run \
+		-d --rm \
+		--name swapi-mongo \
+		-p 27017:27017 -p 28017:28017 \
+		star-wars-api/mongo
+	@clear
+
 test: setup
 	@ginkgo -gcflags=-l ./...	
 
-test-integ:
+test-integ: docker-up
 	@ginkgo -gcflags=-l --tags=integration ./...
 
-cov: setup
+cov: docker-up
 	@gocov test -gcflags=-l --tags=integration ./... | gocov report
 	
-cov-html: setup
+cov-html: docker-up
 	@gocov test -gcflags=-l --tags=integration ./... | gocov-html > cov.html
 
 mock:

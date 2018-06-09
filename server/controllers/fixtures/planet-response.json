@@ -1,0 +1,15 @@
+{
+    "data": {
+        "id": 1,
+        "name": "Hoth",
+        "climate": "temperate",
+        "terrain": "grasslands, mountains",
+        "films": [
+            {
+                "title": "The Empire Strikes Back",
+                "episodeId": 5
+            }
+        ]
+    },
+    "messages": []
+}

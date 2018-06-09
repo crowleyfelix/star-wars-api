@@ -1,0 +1,4 @@
+# Build
+FROM mongo 
+
+COPY ./scripts/mongo-setup.js /docker-entrypoint-initdb.d/

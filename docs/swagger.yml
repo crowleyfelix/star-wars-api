@@ -1,0 +1,180 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Star Wars API"
+basePath: "/api"
+schemes:
+- "http"
+tags:
+- name: "planet"
+  description: "Everything about Star Wars Planets"
+
+paths:
+  /planets:
+
+    post:
+      summary: "Create planet"
+      tags:
+        - planet
+      operationId: "createPlanet"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - in: "body"
+          name: "body"
+          description: "Star wars planet"
+          schema:
+            $ref: "#/definitions/Planet"
+      responses:
+        201:
+          description: "Planet created with success"
+          schema:
+            allOf:
+              - $ref: "#/definitions/Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/PlanetFilms"
+        422:
+          description: "Planet already exists"
+          schema:
+            $ref: "#/definitions/Response"
+
+    get:
+      summary: "Search planets"
+      tags:
+        - planet
+      operationId: "searchPlanets"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "query"
+          description: "Planet's id for filtering"
+          type: "integer"
+        - name: "name"
+          in: "query"
+          description: "Planet's name for filtering"
+          type: "string"
+        - name: "climate"
+          in: "query"
+          description: "Planet's climate for filtering"
+          type: "string"
+        - name: "terrain"
+          in: "query"
+          description: "Planet's terrain for filtering"
+          type: "string"
+        - name: "page"
+          in: "query"
+          description: "Page number"
+          type: "integer"
+        - name: "page_size"
+          in: "query"
+          description: "Planets per page"
+          type: "integer"
+      responses:
+        200:
+          schema:
+            allOf:
+              - $ref: "#/definitions/Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/PlanetFilms"
+                    
+  /planets/{id}:
+
+    get:
+      summary: "Get planet"
+      tags:
+        - planet
+      operationId: "getPlanet"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Planet's id"
+      responses:
+        200:
+          schema:
+            allOf:
+              - $ref: "#/definitions/Response"
+              - properties:
+                  data:
+                    $ref: "#/definitions/PlanetFilms"
+        404:
+          description: "Planet not found"
+          schema:
+            $ref: "#/definitions/Response"
+
+    delete:
+      summary: "Delete planet"
+      tags:
+        - planet
+      operationId: "deletePlanet"
+      consumes:
+        - "application/json"
+      produces:
+        - "application/json"
+      parameters:
+        - name: "id"
+          in: "path"
+          description: "Planet's id"
+      responses:
+        200:
+          description: "Planet deleted with success"
+          schema:
+            $ref: "#/definitions/Response"
+        404:
+          description: "Planet not found"
+          schema:
+            $ref: "#/definitions/Response"
+
+definitions:
+  Response:
+    type: "object"
+    properties:
+      data:
+        type: "object"
+      messages:
+        type: array
+        items:
+          type: "string"
+              
+  Planet:
+    type: "object"
+    required:
+    - "name"
+    - "climate"
+    - "terrain"
+    properties:
+      id:
+        type: "integer"
+      name:
+        type: "string"
+      climate:
+        type: "string"
+      terrain:
+        type: "string"
+
+  PlanetFilms:
+    type: "object"
+    allOf:
+      - $ref: "#/definitions/Planet"
+      - properties:
+          films:
+            type: "array"
+            items:
+              $ref: "#/definitions/Film"
+  Film:
+    type: "object"
+    properties:
+      title:
+        type: "string"
+      episodeId:
+        type: "integer"
