@@ -37,6 +37,10 @@ go get -d -u -v ./...
 go build -o run server/main.go && ./run
 ```
 
+## Interagindo com a aplicação
+
+Os endpoints estão documentados no formato do swagger e encontram-se em [docs/swagger.yml](docs/swagger.yml).
+
 ## Rodando os testes
 
 Para executar os testes automzatizados, execute os seguintes comandos:

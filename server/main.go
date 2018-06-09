@@ -54,7 +54,7 @@ func setUp() {
 }
 
 func registerRoutes(engine *gin.Engine) {
-	root := engine.Group("/")
+	root := engine.Group("/api")
 	middlewares.Register(root)
 	controllers.Register(root)
 }
