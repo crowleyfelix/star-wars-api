@@ -4,8 +4,8 @@ import (
 	"github.com/gin-gonic/gin"
 )
 
-//RegisterRoutes register API routes
-func RegisterRoutes(group *gin.RouterGroup) {
+//Register register API routes
+func Register(group gin.IRouter) {
 	group.GET("/health-check", HealthCheck)
 
 	planets := group.Group("/planets")

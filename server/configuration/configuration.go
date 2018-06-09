@@ -7,9 +7,9 @@ import (
 
 //Configuration is the application configuration
 type Configuration struct {
-	Port       int  `cfgDefault:"8888"`
-	DebugModel bool `cfg:"debug" cfgDefault:"true"`
-	MongoDB    MongoDB
+	Port    int  `cfgDefault:"8888"`
+	IsDebug bool `cfg:"debug" cfgDefault:"true"`
+	MongoDB MongoDB
 }
 
 func load() {

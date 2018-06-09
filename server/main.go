@@ -7,6 +7,7 @@ import (
 	gc "github.com/aphistic/gomol-console"
 	"github.com/crowleyfelix/star-wars-api/server/configuration"
 	"github.com/crowleyfelix/star-wars-api/server/controllers"
+	"github.com/crowleyfelix/star-wars-api/server/middlewares"
 	"github.com/gin-gonic/gin"
 )
 
@@ -30,6 +31,10 @@ func start() {
 }
 
 func setUp() {
+	if config := configuration.Get(); !config.IsDebug {
+		gin.SetMode("release")
+	}
+
 	consoleCfg := gc.NewConsoleLoggerConfig()
 	consoleLogger, _ := gc.NewConsoleLogger(consoleCfg)
 	consoleLogger.SetTemplate(gc.NewTemplateFull())
@@ -49,5 +54,7 @@ func setUp() {
 }
 
 func registerRoutes(engine *gin.Engine) {
-	controllers.RegisterRoutes(engine.Group("/"))
+	root := engine.Group("/")
+	middlewares.Register(root)
+	controllers.Register(root)
 }
