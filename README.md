@@ -67,8 +67,8 @@ make cov
 make cov-html
 ```
 
-[.env.example](.env.example)
-[make](https://www.gnu.org/software/make/manual/make.html)
-[go](https://golang.org/dl/)
-[docker](https://www.docker.com/community-edition#/download)
-[docker-compose](https://docs.docker.com/compose/install/)
+[.env.example]:.env.example
+[make]:https://www.gnu.org/software/make/manual/make.html
+[go]:https://golang.org/dl/
+[docker]:https://www.docker.com/community-edition#/download
+[docker-compose]:https://docs.docker.com/compose/install/
