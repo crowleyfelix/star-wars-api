@@ -1,4 +1,6 @@
-use starWars;
+conn = new Mongo();
+
+db = conn.getDB("starWars");
 
 //Collections
 db.createCollection('planets');
