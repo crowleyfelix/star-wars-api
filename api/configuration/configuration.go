@@ -3,6 +3,8 @@ package configuration
 import (
 	"os"
 	"strconv"
+
+	"github.com/aphistic/gomol"
 )
 
 //Configuration is the application configuration
@@ -12,6 +14,7 @@ type Configuration struct {
 }
 
 func load() {
+	gomol.Debug("Loading configurations of environment")
 	config = new(Configuration)
 	config.Port, _ = strconv.Atoi(os.Getenv("PORT"))
 	config.MongoDB.Database = os.Getenv("MONGO_DATABASE")

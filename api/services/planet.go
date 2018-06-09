@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"sync"
 
+	"github.com/aphistic/gomol"
+
 	"github.com/crowleyfelix/star-wars-api/api/clients/swapi"
 	mongodb "github.com/crowleyfelix/star-wars-api/api/database/mongodb/collections"
 	"github.com/crowleyfelix/star-wars-api/api/errors"
@@ -33,10 +35,16 @@ func NewPlanet() Planet {
 }
 
 func (p *planet) Create(data *models.Planet) errors.Error {
+	attrs := gomol.NewAttrsFromMap(map[string]interface{}{
+		"planet": data,
+	})
+
+	gomol.Infom(attrs, "Inserting planet on database")
 	return p.database.Insert(data.To())
 }
 
 func (p *planet) Get(id int) (*models.Planet, errors.Error) {
+	gomol.Infof("Finding planet %d on database", id)
 	raw, err := p.database.FindByID(id)
 
 	if err != nil {
@@ -58,6 +66,13 @@ func (p *planet) Get(id int) (*models.Planet, errors.Error) {
 }
 
 func (p *planet) Search(params *PlanetSearchParams, pagination *Pagination) (*models.PlanetPage, errors.Error) {
+	attrs := gomol.NewAttrsFromMap(map[string]interface{}{
+		"params":     params,
+		"pagination": pagination,
+	})
+
+	gomol.Infom(attrs, "Searching planet on database")
+
 	raw, err := p.database.Find(&params.PlanetSearchQuery, &pagination.Pagination)
 
 	if err != nil {
@@ -80,10 +95,12 @@ func (p *planet) Search(params *PlanetSearchParams, pagination *Pagination) (*mo
 }
 
 func (p *planet) Remove(id int) errors.Error {
+	gomol.Infof("Deleting planet %d on database", id)
 	return p.database.Delete(id)
 }
 
 func (p *planet) Validate(data *models.Planet) errors.Error {
+	gomol.Info("Validating planet")
 	_, err := p.client.Planet(data.Name)
 
 	if _, ok := err.(*errors.NotFound); ok {
@@ -94,6 +111,7 @@ func (p *planet) Validate(data *models.Planet) errors.Error {
 }
 
 func (p *planet) fetchFilms(planets []*models.Planet) errors.Error {
+	gomol.Debug("Fetching planets from swapi")
 
 	group := new(sync.WaitGroup)
 	mutex := new(sync.Mutex)
@@ -106,6 +124,11 @@ func (p *planet) fetchFilms(planets []*models.Planet) errors.Error {
 		go func(planet *models.Planet) {
 			defer mutex.Unlock()
 			defer group.Done()
+
+			attrs := gomol.NewAttrsFromMap(map[string]interface{}{
+				"planet": planet,
+			})
+			gomol.Infom(attrs, "Fetching planet from swapi")
 
 			films, e := p.client.PlanetFilms(planet.Name)
 

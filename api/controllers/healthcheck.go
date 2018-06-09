@@ -21,14 +21,14 @@ func HealthCheck(c *gin.Context) {
 }
 
 func (h *healthCheck) Get() {
-	var dependencies []Dependencie
+	var dependencies []Dependence
 
 	checkers := []checker{
 		h.checkSwapi,
 		h.checkMongoDB,
 	}
 
-	depc := make(chan Dependencie, len(checkers))
+	depc := make(chan Dependence, len(checkers))
 
 	go func() {
 		for i := range checkers {
@@ -48,18 +48,22 @@ func (h *healthCheck) Get() {
 	h.context.JSON(status, dependencies)
 }
 
-func (h *healthCheck) checkSwapi(depc chan Dependencie) {
-	dep := Dependencie{Name: "Swapi"}
+func (h *healthCheck) checkSwapi(depc chan Dependence) {
+	dep := Dependence{Name: "Swapi"}
 
 	if _, err := swapi.New().Endpoints(); err != nil {
-		*dep.Error = err.Error()
+		e := err.Error()
+		dep.Error = &e
 	}
 
 	depc <- dep
 }
 
-func (h *healthCheck) checkMongoDB(depc chan Dependencie) {
-	dep := Dependencie{Name: "MongoDB"}
+func (h *healthCheck) checkMongoDB(depc chan Dependence) {
+	dep := Dependence{Name: "MongoDB"}
+	defer func() {
+		depc <- dep
+	}()
 
 	var (
 		session *mgo.Session
@@ -67,14 +71,17 @@ func (h *healthCheck) checkMongoDB(depc chan Dependencie) {
 	)
 
 	if session, err = mongodb.Pool().Session(); err != nil {
-		*dep.Error = err.Error()
+		e := err.Error()
+		dep.Error = &e
+		return
 	}
-
 	if err = session.Ping(); err != nil {
-		*dep.Error = err.Error()
+		e := err.Error()
+		dep.Error = &e
+		return
 	}
 
-	depc <- dep
+	mongodb.Pool().Release(session)
 }
 
-type checker func(depc chan Dependencie)
+type checker func(depc chan Dependence)

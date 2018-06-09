@@ -6,6 +6,8 @@ import (
 	"regexp"
 	"strconv"
 
+	"github.com/aphistic/gomol"
+
 	"github.com/crowleyfelix/star-wars-api/api/models"
 
 	"github.com/crowleyfelix/star-wars-api/api/errors"
@@ -65,6 +67,7 @@ func (b *baseController) notAllowed() {
 }
 
 func (b *baseController) fail(err errors.Error) {
+	gomol.Debug("Sending fail response")
 	statusCode := http.StatusInternalServerError
 
 	if value, ok := err.(errors.HTTPError); ok {
@@ -78,6 +81,7 @@ func (b *baseController) fail(err errors.Error) {
 }
 
 func (b *baseController) ok(data interface{}, page *models.Page) {
+	gomol.Debug("Sending ok response")
 
 	if data == nil {
 		data = make(map[string]interface{})
@@ -91,6 +95,7 @@ func (b *baseController) ok(data interface{}, page *models.Page) {
 }
 
 func (b *baseController) created(data interface{}, page *models.Page) {
+	gomol.Debug("Sending created response")
 
 	if data == nil {
 		data = make(map[string]interface{})
@@ -103,8 +108,8 @@ func (b *baseController) created(data interface{}, page *models.Page) {
 }
 
 func (b *baseController) calculatePage(page *models.Page) *Page {
-
 	if page == nil {
+		gomol.Warning("Page is nil, nothing to calculate")
 		return nil
 	}
 

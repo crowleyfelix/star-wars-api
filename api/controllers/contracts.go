@@ -17,7 +17,7 @@ type Response struct {
 	Messages []string    `json:"messages"`
 }
 
-type Dependencie struct {
+type Dependence struct {
 	Name  string  `json:"name"`
 	Error *string `json:"error"`
 }

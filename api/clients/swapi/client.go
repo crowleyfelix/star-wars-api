@@ -23,6 +23,7 @@ type client struct{}
 
 //New returns a new Swapi Client
 func New() Client {
+	gomol.Debug("Creating new Swapi Client")
 	return new(client)
 }
 
@@ -79,7 +80,7 @@ func (s *client) Planet(name string) (*Planet, errors.Error) {
 }
 
 func (s *client) PlanetFilms(name string) ([]Film, errors.Error) {
-	gomol.Debugf("Search for planet %s on swapi", name)
+	gomol.Debugf("Searching for planet %s on swapi", name)
 
 	planet, err := s.Planet(name)
 
@@ -125,7 +126,7 @@ func (s *client) films(urls []string) ([]Film, errors.Error) {
 }
 
 func (s *client) film(url string) (*Film, errors.Error) {
-	gomol.Debugf("Search for film in %s", url)
+	gomol.Debugf("Searching for film in %s", url)
 
 	var film Film
 

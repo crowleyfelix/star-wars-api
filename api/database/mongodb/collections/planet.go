@@ -27,6 +27,8 @@ type planets struct {
 
 //NewPlanets returns new instance of planet collection
 func NewPlanets() Planets {
+	gomol.Debug("Creating new mongodb planet collection manager")
+
 	config := configuration.Get().MongoDB
 	return &planets{
 		collection{
@@ -38,7 +40,7 @@ func NewPlanets() Planets {
 }
 
 func (pr *planets) Insert(planet *models.Planet) errors.Error {
-	gomol.Debugf("Inserting planet %#v on database", planet)
+	gomol.Debug("Inserting planet on mongodb")
 
 	return pr.execute(func(col *mgo.Collection) error {
 		var err errors.Error
@@ -54,7 +56,7 @@ func (pr *planets) Insert(planet *models.Planet) errors.Error {
 }
 
 func (pr *planets) FindByID(id int) (*models.Planet, errors.Error) {
-	gomol.Debugf("Finding planet %d on database", id)
+	gomol.Debug("Finding planet by id on mongodb")
 
 	query := &PlanetSearchQuery{
 		ID: &id,
@@ -80,6 +82,7 @@ func (pr *planets) FindByID(id int) (*models.Planet, errors.Error) {
 }
 
 func (pr *planets) Find(query *PlanetSearchQuery, pagination *Pagination) (*models.PlanetPage, errors.Error) {
+	gomol.Debug("Finding planet on mongodb")
 
 	var (
 		err  errors.Error
@@ -105,7 +108,7 @@ func (pr *planets) Find(query *PlanetSearchQuery, pagination *Pagination) (*mode
 }
 
 func (pr *planets) Update(planet *models.Planet) errors.Error {
-	gomol.Debugf("Updating planet %d on database", planet.ID)
+	gomol.Debug("Updating planet on mongodb")
 
 	query := bson.M{
 		"_id": planet.ID,
@@ -117,7 +120,7 @@ func (pr *planets) Update(planet *models.Planet) errors.Error {
 }
 
 func (pr *planets) Delete(id int) errors.Error {
-	gomol.Debugf("Deleting planet %d on database", id)
+	gomol.Debug("Deleting planet on mongodb")
 
 	query := bson.M{
 		"_id": id,
