@@ -1,0 +1,15 @@
+{
+    "planets": [
+        {
+            "id": 1,
+            "name": "Hoth",
+            "climate": "temperate",
+            "terrain": "grasslands, mountains"
+        }
+    ],
+    "previous": 1,
+    "current": 2,
+    "next": 3,
+    "size": 9,
+    "maxSize": 10
+}
