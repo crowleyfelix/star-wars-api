@@ -14,9 +14,20 @@ func File(path string) []byte {
 	return blob
 }
 
-//LoadJSON loads a json verifying possible errors
+//LoadJSON loads a json file
 func LoadJSON(path string, target interface{}) {
-	blob := File(path)
+	LoadJSONFromBytes(File(path), target)
+}
+
+//LoadJSONFromBytes loads a json verifying possible errors
+func LoadJSONFromBytes(blob []byte, target interface{}) {
 	err := json.Unmarshal(blob, &target)
 	Expect(err).Should(BeNil())
+}
+
+//JSONToBytes marshal a json verifying possible errors
+func JSONToBytes(data interface{}) []byte {
+	blob, err := json.Marshal(data)
+	Expect(err).Should(BeNil())
+	return blob
 }
