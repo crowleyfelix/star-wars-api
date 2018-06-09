@@ -31,14 +31,14 @@ full-check: setup
 	@gometalinter ./... --aggregate
 
 docker-up: setup
-	@sudo docker build -f docker/Dockerfile-mongo --tag star-wars-api/mongo . > /dev/null
+	@sudo docker build -f docker/Dockerfile-mongo --tag star-wars-api/mongo .
 	@sudo docker container start swapi-mongo || \
 		sudo docker run \
 		-d --rm \
 		--name swapi-mongo \
 		-p 27017:27017 -p 28017:28017 \
 		star-wars-api/mongo
-		
+	@clear
 
 test: setup
 	@ginkgo -gcflags=-l ./...	

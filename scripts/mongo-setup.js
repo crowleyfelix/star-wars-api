@@ -1,17 +1,21 @@
 conn = new Mongo();
 
-db = conn.getDB("starWars");
+databases = ['starWars', 'test']
 
-//Collections
-db.createCollection('planets');
-db.createCollection('counters');
+databases.forEach(database => {
+    db = conn.getDB(database);
 
-//Counters
-db.counters.insert({
-    "_id": "planet_id",
-    "sequence_value": NumberInt(-1)
+    //Collections
+    db.createCollection('planets');
+    db.createCollection('counters');
+
+    //Counters
+    db.counters.insert({
+        '_id': 'planet_id',
+        'sequence_value': NumberInt(-1)
+    });
+
+    //Indexes
+    db.planets.createIndex({ name: 'text' }, { unique: true })
 });
-
-//Indexes
-db.planets.createIndex({ name: "text" }, { unique: true })
 

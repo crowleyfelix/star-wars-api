@@ -17,7 +17,8 @@ var _ = Describe("Planets", func() {
 
 		var (
 			requester = Requester{
-				URL: "localhost/planets",
+				URL:     "/planets",
+				Handler: Planets,
 			}
 			recorder *httptest.ResponseRecorder
 		)

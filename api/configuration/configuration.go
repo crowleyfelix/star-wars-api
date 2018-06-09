@@ -1,25 +1,26 @@
 package configuration
 
 import (
-	"os"
-	"strconv"
-
 	"github.com/aphistic/gomol"
+	"github.com/crgimenes/goconfig"
 )
 
 //Configuration is the application configuration
 type Configuration struct {
-	Port    int
-	MongoDB MongoDB
+	Port       int  `cfgDefault:"8888"`
+	DebugModel bool `cfg:"debug" cfgDefault:"true"`
+	MongoDB    MongoDB
 }
 
 func load() {
 	gomol.Debug("Loading configurations of environment")
+
 	config = new(Configuration)
-	config.Port, _ = strconv.Atoi(os.Getenv("PORT"))
-	config.MongoDB.Database = os.Getenv("MONGO_DATABASE")
-	config.MongoDB.MaxPoolSize, _ = strconv.Atoi(os.Getenv("MONGO_MAX_POOL_SIZE"))
-	config.MongoDB.URI = os.Getenv("MONGO_URI")
+
+	err := goconfig.Parse(config)
+	if err != nil {
+		panic(err.Error())
+	}
 }
 
 //Get returns application configuration loaded
