@@ -85,7 +85,7 @@ func (p *planet) Post() {
 	)
 
 	if err := p.context.BindJSON(data); err != nil {
-		p.fail(errors.NewBadRequest(err.Error()))
+		p.fail(errors.NewUnprocessableEntity(err.Error()))
 		return
 	}
 
