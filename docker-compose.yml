@@ -1,6 +1,8 @@
 version: '3'
 services:
-  api:
+  web:
+    image: star-wars-api/web
+    container_name: swapi-web
     build:
       context: .
       dockerfile: ./docker/Dockerfile-api
@@ -9,9 +11,14 @@ services:
     ports:
       - "8888:8888"
   mongo:
+    image: star-wars-api/mongo
+    container_name: swapi-mongo
+    logging:
+      driver: none
     build:
       context: .
       dockerfile: ./docker/Dockerfile-mongo
+    hostname: mongo
     ports:
       - 27017:27017
       - 28017:28017      
