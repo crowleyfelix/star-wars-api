@@ -1,0 +1,22 @@
+{
+    "current": "/planets?page=1&page_size=10",
+    "previous": null,
+    "next": null,
+    "maxSize": 10,
+    "size": 1,
+    "data": [
+        {
+            "id": 1,
+            "name": "Hoth",
+            "climate": "temperate",
+            "terrain": "grasslands, mountains",
+            "films": [
+                {
+                    "title": "The Empire Strikes Back",
+                    "episodeId": 5
+                }
+            ]
+        }
+    ],
+    "messages": []
+}

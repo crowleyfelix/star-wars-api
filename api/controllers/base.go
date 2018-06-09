@@ -16,7 +16,8 @@ import (
 )
 
 const (
-	paginationQuery = "%s&page=%d&page_size=%d"
+	paginationQuery   = "%s?page=%d&page_size=%d%s"
+	paginationPattern = "((page=\\d+&?)|(page_size=\\d+&?))"
 )
 
 //Controller exposes api controller methdos
@@ -114,25 +115,22 @@ func (b *baseController) calculatePage(page *models.Page) *Page {
 	}
 
 	url := b.context.(*gin.Context).Request.URL
-
-	compiled, _ := regexp.Compile("((page=\\d+&?)|(page_size=\\d+&?))")
+	compiled, _ := regexp.Compile(paginationPattern)
 	query := compiled.ReplaceAllString(url.RawQuery, "")
 
-	path := fmt.Sprintf("%s?%s", url.Path, query)
-
 	pg := &Page{
-		Current: fmt.Sprintf(paginationQuery, path, page.Current, page.MaxSize),
+		Current: fmt.Sprintf(paginationQuery, url.Path, page.Current, page.MaxSize, query),
 		MaxSize: page.MaxSize,
 		Size:    page.Size,
 	}
 
 	if page.Previous != nil {
-		previous := fmt.Sprintf(paginationQuery, path, page.Previous, page.MaxSize)
+		previous := fmt.Sprintf(paginationQuery, url.Path, page.Previous, page.MaxSize, query)
 		pg.Previous = &previous
 	}
 
 	if page.Next != nil {
-		next := fmt.Sprintf(paginationQuery, path, page.Next, page.MaxSize)
+		next := fmt.Sprintf(paginationQuery, url.Path, page.Next, page.MaxSize, query)
 		pg.Next = &next
 	}
 

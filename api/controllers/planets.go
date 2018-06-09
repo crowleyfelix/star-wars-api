@@ -1,6 +1,8 @@
 package controllers
 
 import (
+	"strconv"
+
 	"github.com/crowleyfelix/star-wars-api/api/errors"
 	"github.com/crowleyfelix/star-wars-api/api/models"
 	"github.com/crowleyfelix/star-wars-api/api/services"
@@ -77,24 +79,30 @@ func (p *planet) Get() {
 
 func (p *planet) Post() {
 
-	var data models.Planet
+	var (
+		data = new(models.Planet)
+		err  errors.Error
+	)
 
-	if err := p.context.BindJSON(&data); err != nil {
+	if err := p.context.BindJSON(data); err != nil {
 		p.fail(errors.NewBadRequest(err.Error()))
 		return
 	}
 
-	if err := p.service.Validate(&data); err != nil {
+	validate := p.context.DefaultQuery("validate", "true")
+	if validate, _ := strconv.ParseBool(validate); validate {
+		if err := p.service.Validate(data); err != nil {
+			p.fail(err)
+			return
+		}
+	}
+
+	if data, err = p.service.Create(data); err != nil {
 		p.fail(err)
 		return
 	}
 
-	if err := p.service.Create(&data); err != nil {
-		p.fail(err)
-		return
-	}
-
-	p.created(nil, nil)
+	p.created(data, nil)
 }
 
 func (p *planet) Delete() {

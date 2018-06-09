@@ -45,7 +45,7 @@ var _ = Describe("Planet", func() {
 
 	Describe("Create(): When creating a planet", func() {
 		var (
-			modelPlanet models.Planet
+			modelPlanet = new(models.Planet)
 			mongoPlanet mongoModels.Planet
 		)
 
@@ -55,17 +55,18 @@ var _ = Describe("Planet", func() {
 		)
 
 		BeforeEach(func() {
-			LoadJSON("fixtures/model-planet.json", &modelPlanet)
+			LoadJSON("fixtures/model-planet.json", modelPlanet)
 			LoadJSON("fixtures/mongo-planet.json", &mongoPlanet)
 
 			expectedError = errors.Build(0)
-			databaseMock.On("Insert", &mongoPlanet).Return(&modelPlanet, expectedError).Once()
+			databaseMock.On("Insert", &mongoPlanet).Return(nil, expectedError).Once()
 
-			actualError = pl.Create(&modelPlanet)
+			modelPlanet, actualError = pl.Create(modelPlanet)
 		})
 
 		It("should insert into database", func() {
 			Expect(actualError).To(Equal(expectedError))
+			Expect(modelPlanet).To(BeNil())
 		})
 	})
 

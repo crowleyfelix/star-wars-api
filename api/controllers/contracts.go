@@ -45,7 +45,7 @@ func (p *Pagination) To() *services.Pagination {
 	}
 
 	if p.Size == 0 {
-		pagination.Size = defaultPage
+		pagination.Size = defaultPageSize
 	} else {
 		pagination.Size = p.Size
 	}

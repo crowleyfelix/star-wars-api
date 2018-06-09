@@ -78,8 +78,18 @@ func (r *Requester) parseParams(url string, params Params) string {
 	return url
 }
 func (r *Requester) parseQuery(url string, query Params) string {
+	i := 0
+	signal := "?"
+
 	for key, value := range query {
-		url += fmt.Sprintf("&%s=%s", key, value)
+
+		if i > 0 {
+			signal = "&"
+		}
+
+		url += fmt.Sprintf("%s%s=%s", signal, key, value)
+
+		i++
 	}
 	return url
 }

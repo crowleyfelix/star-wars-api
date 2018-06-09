@@ -41,6 +41,20 @@ func (_m *RequestContext) Data(_a0 int, _a1 string, _a2 []byte) {
 	_m.Called(_a0, _a1, _a2)
 }
 
+// DefaultQuery provides a mock function with given fields: _a0, _a1
+func (_m *RequestContext) DefaultQuery(_a0 string, _a1 string) string {
+	ret := _m.Called(_a0, _a1)
+
+	var r0 string
+	if rf, ok := ret.Get(0).(func(string, string) string); ok {
+		r0 = rf(_a0, _a1)
+	} else {
+		r0 = ret.Get(0).(string)
+	}
+
+	return r0
+}
+
 // Header provides a mock function with given fields: _a0, _a1
 func (_m *RequestContext) Header(_a0 string, _a1 string) {
 	_m.Called(_a0, _a1)

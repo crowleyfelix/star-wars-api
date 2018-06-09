@@ -25,8 +25,8 @@ func LoadJSONFromBytes(blob []byte, target interface{}) {
 	Expect(err).Should(BeNil())
 }
 
-//JSONToBytes marshal a json verifying possible errors
-func JSONToBytes(data interface{}) []byte {
+//ToJSONBytes marshal a json verifying possible errors
+func ToJSONBytes(data interface{}) []byte {
 	blob, err := json.Marshal(data)
 	Expect(err).Should(BeNil())
 	return blob
