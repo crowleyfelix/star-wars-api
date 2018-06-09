@@ -14,7 +14,7 @@ import (
 
 //Planets exposes methods of planet CRUD operations
 type Planets interface {
-	Insert(*models.Planet) errors.Error
+	Insert(*models.Planet) (*models.Planet, errors.Error)
 	Find(*PlanetSearchQuery, *Pagination) (*models.PlanetPage, errors.Error)
 	FindByID(int) (*models.Planet, errors.Error)
 	Update(*models.Planet) errors.Error
@@ -39,10 +39,10 @@ func NewPlanets() Planets {
 	}
 }
 
-func (pr *planets) Insert(planet *models.Planet) errors.Error {
+func (pr *planets) Insert(planet *models.Planet) (*models.Planet, errors.Error) {
 	gomol.Debug("Inserting planet on mongodb")
 
-	return pr.execute(func(col *mgo.Collection) error {
+	err := pr.execute(func(col *mgo.Collection) error {
 		var err errors.Error
 		planet.ID, err = pr.calculateNextID(col.Database)
 
@@ -53,6 +53,12 @@ func (pr *planets) Insert(planet *models.Planet) errors.Error {
 
 		return col.Insert(planet)
 	})
+
+	if err != nil {
+		return nil, err
+	}
+
+	return planet, nil
 }
 
 func (pr *planets) FindByID(id int) (*models.Planet, errors.Error) {

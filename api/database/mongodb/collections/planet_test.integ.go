@@ -38,14 +38,22 @@ var _ = Describe("Planets", func() {
 	})
 
 	Describe("Insert(): When inserting a planet", func() {
-		var err error
+		var (
+			actual *models.Planet
+			err    error
+		)
 
 		JustBeforeEach(func() {
-			err = coll.Insert(planet)
+			actual, err = coll.Insert(planet)
+
+			if actual != nil {
+				id = actual.ID
+			}
 		})
 		Context("with unexistent data", func() {
 			It("should set id", func() {
 				Expect(err).To(BeNil())
+				Expect(actual).To(Equal(planet))
 			})
 		})
 		Context("with duplicated name", func() {
@@ -80,11 +88,6 @@ var _ = Describe("Planets", func() {
 
 			actual, err = coll.Find(query, pagination)
 
-			if actual != nil && len(actual.Planets) > 0 {
-				id = actual.Planets[0].ID
-				planet.ID = id
-			}
-
 			expect = &models.PlanetPage{
 				Page: &models.Page{
 					MaxSize:  1,
@@ -95,8 +98,6 @@ var _ = Describe("Planets", func() {
 				},
 				Planets: []models.Planet{*planet},
 			}
-		})
-		AfterEach(func() {
 		})
 		It("should get planet", func() {
 			Expect(err).To(BeNil())

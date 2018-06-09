@@ -78,19 +78,28 @@ func (_m *Planets) FindByID(_a0 int) (*models.Planet, errors.Error) {
 }
 
 // Insert provides a mock function with given fields: _a0
-func (_m *Planets) Insert(_a0 *models.Planet) errors.Error {
+func (_m *Planets) Insert(_a0 *models.Planet) (*models.Planet, errors.Error) {
 	ret := _m.Called(_a0)
 
-	var r0 errors.Error
-	if rf, ok := ret.Get(0).(func(*models.Planet) errors.Error); ok {
+	var r0 *models.Planet
+	if rf, ok := ret.Get(0).(func(*models.Planet) *models.Planet); ok {
 		r0 = rf(_a0)
 	} else {
 		if ret.Get(0) != nil {
-			r0 = ret.Get(0).(errors.Error)
+			r0 = ret.Get(0).(*models.Planet)
 		}
 	}
 
-	return r0
+	var r1 errors.Error
+	if rf, ok := ret.Get(1).(func(*models.Planet) errors.Error); ok {
+		r1 = rf(_a0)
+	} else {
+		if ret.Get(1) != nil {
+			r1 = ret.Get(1).(errors.Error)
+		}
+	}
+
+	return r0, r1
 }
 
 // Update provides a mock function with given fields: _a0

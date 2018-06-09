@@ -1,0 +1,9 @@
+{
+    "data": {
+        "id": 1,
+        "name": "Hoth",
+        "climate": "temperate",
+        "terrain": "grasslands, mountains"
+    },
+    "messages": []
+}

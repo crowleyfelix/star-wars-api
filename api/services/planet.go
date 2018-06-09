@@ -14,7 +14,7 @@ import (
 
 //Planet exposes necessary methods of a planet service
 type Planet interface {
-	Create(*models.Planet) errors.Error
+	Create(*models.Planet) (*models.Planet, errors.Error)
 	Get(int) (*models.Planet, errors.Error)
 	Search(*PlanetSearchParams, *Pagination) (*models.PlanetPage, errors.Error)
 	Remove(int) errors.Error
@@ -34,13 +34,20 @@ func NewPlanet() Planet {
 	}
 }
 
-func (p *planet) Create(data *models.Planet) errors.Error {
+func (p *planet) Create(data *models.Planet) (*models.Planet, errors.Error) {
 	attrs := gomol.NewAttrsFromMap(map[string]interface{}{
 		"planet": data,
 	})
 
 	gomol.Infom(attrs, "Inserting planet on database")
-	return p.database.Insert(data.To())
+	result, err := p.database.Insert(data.To())
+
+	if err != nil {
+		return nil, err
+	}
+
+	data.From(result)
+	return data, nil
 }
 
 func (p *planet) Get(id int) (*models.Planet, errors.Error) {

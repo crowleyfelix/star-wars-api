@@ -59,7 +59,7 @@ var _ = Describe("Planet", func() {
 			LoadJSON("fixtures/mongo-planet.json", &mongoPlanet)
 
 			expectedError = errors.Build(0)
-			databaseMock.On("Insert", &mongoPlanet).Return(expectedError).Once()
+			databaseMock.On("Insert", &mongoPlanet).Return(&modelPlanet, expectedError).Once()
 
 			actualError = pl.Create(&modelPlanet)
 		})
