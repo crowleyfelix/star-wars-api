@@ -1,5 +1,7 @@
 # Star Wars API
 
+![travis](https://travis-ci.org/crowleyfelix/star-wars-api.svg?branch=master)
+
 ## Pre-requisitos
 
 - [make]
