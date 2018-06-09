@@ -1,0 +1,20 @@
+# Build
+FROM golang:latest as builder 
+
+ENV GOPATH "/"
+ENV APP_PATH "/src/github.com/crowleyfelix/star-wars-api/api"
+
+ADD ./api $APP_PATH
+WORKDIR $APP_PATH
+RUN go get -d
+RUN CGO_ENABLED=0 GOOS=linux go build -o /api ./main.go
+
+# Serve
+FROM scratch
+
+WORKDIR /root/
+COPY --from=builder /api /root
+COPY --from=builder /etc/ssl /etc/ssl
+ENV PATH "$PATH:/root"
+
+CMD [ "./api" ]
