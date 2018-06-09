@@ -9,6 +9,11 @@ branches:
   - master
   - feature/travis-ci
 
+sudo: required
+
+services:
+  - docker
+
 before_install:
   - make setup
 
