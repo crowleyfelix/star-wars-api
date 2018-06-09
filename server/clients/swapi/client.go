@@ -6,7 +6,7 @@ import (
 	"encoding/json"
 	"sync"
 
-	"github.com/crowleyfelix/star-wars-api/api/errors"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
 
 	"github.com/aphistic/gomol"
 	"github.com/levigross/grequests"

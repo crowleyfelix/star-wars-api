@@ -1,4 +1,4 @@
-package server
+package main
 
 import (
 	"fmt"
@@ -11,8 +11,10 @@ func setUp() {
 	consoleCfg := gc.NewConsoleLoggerConfig()
 	consoleLogger, _ := gc.NewConsoleLogger(consoleCfg)
 	consoleLogger.SetTemplate(gc.NewTemplateFull())
+
 	gomol.AddLogger(consoleLogger)
 	gomol.InitLoggers()
+
 	ch := make(chan error)
 
 	go func() {

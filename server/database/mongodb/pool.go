@@ -2,8 +2,8 @@ package mongodb
 
 import (
 	"github.com/aphistic/gomol"
-	"github.com/crowleyfelix/star-wars-api/api/configuration"
-	"github.com/crowleyfelix/star-wars-api/api/errors"
+	"github.com/crowleyfelix/star-wars-api/server/configuration"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
 	"gopkg.in/mgo.v2"
 )
 

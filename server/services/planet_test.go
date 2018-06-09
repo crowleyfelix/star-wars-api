@@ -1,14 +1,14 @@
 package services
 
 import (
-	swapi "github.com/crowleyfelix/star-wars-api/api/clients/swapi"
-	swapiMocks "github.com/crowleyfelix/star-wars-api/api/clients/swapi/mocks"
-	mongodbMocks "github.com/crowleyfelix/star-wars-api/api/database/mongodb/collections/mocks"
-	mongoModels "github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
-	"github.com/crowleyfelix/star-wars-api/api/errors"
-	"github.com/crowleyfelix/star-wars-api/api/models"
+	swapi "github.com/crowleyfelix/star-wars-api/server/clients/swapi"
+	swapiMocks "github.com/crowleyfelix/star-wars-api/server/clients/swapi/mocks"
+	mongodbMocks "github.com/crowleyfelix/star-wars-api/server/database/mongodb/collections/mocks"
+	mongoModels "github.com/crowleyfelix/star-wars-api/server/database/mongodb/models"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
+	"github.com/crowleyfelix/star-wars-api/server/models"
 
-	. "github.com/crowleyfelix/star-wars-api/api/testing"
+	. "github.com/crowleyfelix/star-wars-api/server/testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

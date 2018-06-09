@@ -1,10 +1,10 @@
-package server
+package main
 
 import (
 	"fmt"
 
-	"github.com/crowleyfelix/star-wars-api/api/configuration"
-	"github.com/crowleyfelix/star-wars-api/api/controllers"
+	"github.com/crowleyfelix/star-wars-api/server/configuration"
+	"github.com/crowleyfelix/star-wars-api/server/controllers"
 	"github.com/gin-gonic/gin"
 )
 

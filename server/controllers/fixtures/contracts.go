@@ -1,6 +1,6 @@
 package fixtures
 
-import "github.com/crowleyfelix/star-wars-api/api/models"
+import "github.com/crowleyfelix/star-wars-api/server/models"
 
 type Response struct {
 	*Page

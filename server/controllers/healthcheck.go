@@ -5,8 +5,8 @@ import (
 
 	"gopkg.in/mgo.v2"
 
-	"github.com/crowleyfelix/star-wars-api/api/clients/swapi"
-	"github.com/crowleyfelix/star-wars-api/api/database/mongodb"
+	"github.com/crowleyfelix/star-wars-api/server/clients/swapi"
+	"github.com/crowleyfelix/star-wars-api/server/database/mongodb"
 	"github.com/gin-gonic/gin"
 )
 

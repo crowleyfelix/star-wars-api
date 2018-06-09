@@ -7,9 +7,9 @@ import (
 	"net/http/httptest"
 	"strconv"
 
-	"github.com/crowleyfelix/star-wars-api/api/controllers/fixtures"
-	"github.com/crowleyfelix/star-wars-api/api/models"
-	. "github.com/crowleyfelix/star-wars-api/api/testing"
+	"github.com/crowleyfelix/star-wars-api/server/controllers/fixtures"
+	"github.com/crowleyfelix/star-wars-api/server/models"
+	. "github.com/crowleyfelix/star-wars-api/server/testing"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 )

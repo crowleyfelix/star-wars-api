@@ -1,11 +1,11 @@
 package collections
 
 import (
-	"github.com/crowleyfelix/star-wars-api/api/errors"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
 
 	"github.com/bouk/monkey"
-	"github.com/crowleyfelix/star-wars-api/api/database/mongodb"
-	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/mocks"
+	"github.com/crowleyfelix/star-wars-api/server/database/mongodb"
+	"github.com/crowleyfelix/star-wars-api/server/database/mongodb/mocks"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 

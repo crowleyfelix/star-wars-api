@@ -1,7 +1,7 @@
 package models
 
 import (
-	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
+	"github.com/crowleyfelix/star-wars-api/server/database/mongodb/models"
 )
 
 //Planet represents a star wars planet

@@ -3,11 +3,11 @@ package collections
 import (
 	"fmt"
 
-	"github.com/crowleyfelix/star-wars-api/api/errors"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
 
 	"github.com/aphistic/gomol"
-	"github.com/crowleyfelix/star-wars-api/api/configuration"
-	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
+	"github.com/crowleyfelix/star-wars-api/server/configuration"
+	"github.com/crowleyfelix/star-wars-api/server/database/mongodb/models"
 	"gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
 )

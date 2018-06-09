@@ -6,10 +6,10 @@ import (
 
 	"github.com/aphistic/gomol"
 
-	"github.com/crowleyfelix/star-wars-api/api/clients/swapi"
-	mongodb "github.com/crowleyfelix/star-wars-api/api/database/mongodb/collections"
-	"github.com/crowleyfelix/star-wars-api/api/errors"
-	"github.com/crowleyfelix/star-wars-api/api/models"
+	"github.com/crowleyfelix/star-wars-api/server/clients/swapi"
+	mongodb "github.com/crowleyfelix/star-wars-api/server/database/mongodb/collections"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
+	"github.com/crowleyfelix/star-wars-api/server/models"
 )
 
 //Planet exposes necessary methods of a planet service

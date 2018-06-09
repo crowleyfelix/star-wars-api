@@ -8,9 +8,9 @@ import (
 
 	"github.com/aphistic/gomol"
 
-	"github.com/crowleyfelix/star-wars-api/api/models"
+	"github.com/crowleyfelix/star-wars-api/server/models"
 
-	"github.com/crowleyfelix/star-wars-api/api/errors"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
 
 	"github.com/gin-gonic/gin"
 )

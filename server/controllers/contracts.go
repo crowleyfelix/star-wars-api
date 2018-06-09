@@ -3,7 +3,7 @@ package controllers
 import (
 	"strconv"
 
-	"github.com/crowleyfelix/star-wars-api/api/services"
+	"github.com/crowleyfelix/star-wars-api/server/services"
 )
 
 const (

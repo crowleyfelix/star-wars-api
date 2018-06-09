@@ -11,7 +11,7 @@ import (
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 
-	"github.com/crowleyfelix/star-wars-api/api/controllers/mocks"
+	"github.com/crowleyfelix/star-wars-api/server/controllers/mocks"
 )
 
 var _ = Describe("Base", func() {

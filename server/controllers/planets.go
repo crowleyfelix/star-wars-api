@@ -3,9 +3,9 @@ package controllers
 import (
 	"strconv"
 
-	"github.com/crowleyfelix/star-wars-api/api/errors"
-	"github.com/crowleyfelix/star-wars-api/api/models"
-	"github.com/crowleyfelix/star-wars-api/api/services"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
+	"github.com/crowleyfelix/star-wars-api/server/models"
+	"github.com/crowleyfelix/star-wars-api/server/services"
 	"github.com/gin-gonic/gin"
 )
 

@@ -5,8 +5,8 @@ package collections
 import (
 	"strings"
 
-	"github.com/crowleyfelix/star-wars-api/api/database/mongodb/models"
-	"github.com/crowleyfelix/star-wars-api/api/errors"
+	"github.com/crowleyfelix/star-wars-api/server/database/mongodb/models"
+	"github.com/crowleyfelix/star-wars-api/server/errors"
 	. "github.com/onsi/ginkgo"
 	. "github.com/onsi/gomega"
 	"github.com/satori/go.uuid"
