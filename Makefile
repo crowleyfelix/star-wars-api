@@ -19,8 +19,11 @@ fmt:
 setup: dep
 
 run: dep
-	@echo Initializing container
-	@sudo docker-compose up
+	@sudo docker container stop swapi-mongo > /dev/null
+	@sudo docker-compose up -d
+
+stop: 
+	@sudo docker-compose down
 
 check: setup
 	@gometalinter ./... --aggregate --fast $(MODIFIED_FILES)
