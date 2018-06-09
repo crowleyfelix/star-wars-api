@@ -7,15 +7,7 @@ branches:
   - feature/travis-ci
 
 before_install:
-  - go get github.com/onsi/gomega
-  - go get github.com/onsi/ginkgo/ginkgo
-  - go get github.com/modocache/gover
+  - make setup
 
 script:
-  - ginkgo -r --randomizeAllSpecs --randomizeSuites --failOnPending --cover --trace --race --compilers=2
-
-after_success:
-  - gover . coverage.txt
-  - ls -al
-  - cat coverage.txt
-  - bash <(curl -s https://codecov.io/bash)
+  - make travis

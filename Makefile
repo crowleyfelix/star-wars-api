@@ -44,6 +44,9 @@ docker-up: setup
 		star-wars-api/mongo
 	@clear
 
+travis:
+	@gocov test -gcflags=-l --tags=integration ./... | gocov report
+
 test: setup
 	@ginkgo -gcflags=-l ./...	
 
