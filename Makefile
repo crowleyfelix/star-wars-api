@@ -10,7 +10,8 @@ dep:
 	github.com/axw/gocov/gocov \
 	gopkg.in/matm/v1/gocov-html \
 	github.com/vektra/mockery/.../ \
-	github.com/alecthomas/gometalinter
+	github.com/alecthomas/gometalinter \
+	github.com/satori/go.uuid
 	@gometalinter --install > /dev/null
 
 fmt:
@@ -34,7 +35,7 @@ deep-check: setup
 full-check: setup
 	@gometalinter ./... --aggregate
 
-docker-up: setup
+docker-up:
 	@sudo docker build -f docker/Dockerfile-mongo --tag star-wars-api/mongo .
 	@sudo docker container start swapi-mongo || \
 		sudo docker run \
@@ -44,16 +45,19 @@ docker-up: setup
 		star-wars-api/mongo
 	@clear
 
+travis: docker-up
+	@gocov test -gcflags=-l --tags=integration ./... | gocov report
+
 test: setup
 	@ginkgo -gcflags=-l ./...	
 
-test-integ: docker-up
+test-integ: docker-up setup 
 	@ginkgo -gcflags=-l --tags=integration ./...
 
-cov: docker-up
+cov: docker-up setup 
 	@gocov test -gcflags=-l --tags=integration ./... | gocov report
 	
-cov-html: docker-up
+cov-html: docker-up setup 
 	@gocov test -gcflags=-l --tags=integration ./... | gocov-html > cov.html
 
 mock:
