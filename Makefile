@@ -10,7 +10,8 @@ dep:
 	github.com/axw/gocov/gocov \
 	gopkg.in/matm/v1/gocov-html \
 	github.com/vektra/mockery/.../ \
-	github.com/alecthomas/gometalinter
+	github.com/alecthomas/gometalinter \
+	github.com/satori/go.uuid
 	@gometalinter --install > /dev/null
 
 fmt:
