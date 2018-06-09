@@ -41,6 +41,7 @@ type PlanetPage struct {
 func (p *PlanetPage) From(raw *models.PlanetPage) {
 	temp := Page(*raw.Page)
 	p.Page = &temp
+	p.Planets = make([]Planet, 0)
 	for _, item := range raw.Planets {
 		var planet Planet
 		planet.From(&item)

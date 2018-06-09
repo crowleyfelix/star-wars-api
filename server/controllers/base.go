@@ -125,12 +125,12 @@ func (b *baseController) calculatePage(page *models.Page) *Page {
 	}
 
 	if page.Previous != nil {
-		previous := fmt.Sprintf(paginationQuery, url.Path, page.Previous, page.MaxSize, query)
+		previous := fmt.Sprintf(paginationQuery, url.Path, *page.Previous, page.MaxSize, query)
 		pg.Previous = &previous
 	}
 
 	if page.Next != nil {
-		next := fmt.Sprintf(paginationQuery, url.Path, page.Next, page.MaxSize, query)
+		next := fmt.Sprintf(paginationQuery, url.Path, *page.Next, page.MaxSize, query)
 		pg.Next = &next
 	}
 

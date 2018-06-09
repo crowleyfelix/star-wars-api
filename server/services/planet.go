@@ -43,6 +43,11 @@ func (p *planet) Create(data *models.Planet) (*models.Planet, errors.Error) {
 	result, err := p.database.Insert(data.To())
 
 	if err != nil {
+
+		if _, ok := err.(*errors.UnprocessableEntity); ok {
+			return nil, errors.NewUnprocessableEntity(fmt.Sprintf("The planet %s sent already exists", data.Name))
+		}
+
 		return nil, err
 	}
 
@@ -140,6 +145,13 @@ func (p *planet) fetchFilms(planets []*models.Planet) errors.Error {
 			films, e := p.client.PlanetFilms(planet.Name)
 
 			if e != nil {
+
+				if _, ok := e.(*errors.NotFound); ok {
+					e = errors.NewInternalServer(
+						fmt.Sprintf("Couldn't found films for %s of id %d, possible inconsistencies on database", planet.Name, planet.ID),
+						e.Error())
+				}
+
 				err = e
 			}
 

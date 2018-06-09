@@ -98,7 +98,7 @@ func (pr *planets) Find(query *PlanetSearchQuery, pagination *Pagination) (*mode
 	err = pr.execute(func(col *mgo.Collection) error {
 		e := col.
 			Find(query).
-			Skip(pr.calculateOffset(pagination)).
+			Skip(calculateOffset(pagination)).
 			Limit(pagination.Size).
 			All(&page.Planets)
 
@@ -106,7 +106,7 @@ func (pr *planets) Find(query *PlanetSearchQuery, pagination *Pagination) (*mode
 			return e
 		}
 
-		page.Page, e = pr.calculatePage(col, query, pagination, len(page.Planets))
+		page.Page, e = calculatePage(col, query, pagination, len(page.Planets))
 		return e
 	})
 

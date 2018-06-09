@@ -21,13 +21,13 @@ func (c *collection) execute(operation func(*mgo.Collection) error) errors.Error
 	session, err := mongodb.Pool().Session()
 
 	if err != nil {
-		return c.parseError(err)
+		return parseError(err)
 	}
 
 	defer mongodb.Pool().Release(session)
 
 	col := session.DB(c.DataBase).C(c.Collection)
-	return c.parseError(operation(col))
+	return parseError(operation(col))
 }
 
 func (c *collection) calculateNextID(db *mgo.Database) (int, errors.Error) {
@@ -51,7 +51,7 @@ func (c *collection) calculateNextID(db *mgo.Database) (int, errors.Error) {
 		Apply(change, &counter)
 
 	if err != nil {
-		return 0, c.parseError(err)
+		return 0, parseError(err)
 	}
 
 	if info.Matched == 0 {
@@ -61,11 +61,14 @@ func (c *collection) calculateNextID(db *mgo.Database) (int, errors.Error) {
 	return counter.SequenceValue, nil
 }
 
-func (c *collection) calculatePage(collection *mgo.Collection, query interface{}, pagination *Pagination, totalItems int) (*models.Page, errors.Error) {
+func calculatePage(collection *mgo.Collection, query interface{}, pagination *Pagination, totalItems int) (*models.Page, errors.Error) {
+	gomol.Debug("Calculating page")
+
 	count, err := collection.Find(query).Count()
 
 	if err != nil {
-		return nil, c.parseError(err)
+		gomol.Error("Failure on counting documents")
+		return nil, parseError(err)
 	}
 
 	page := &models.Page{
@@ -85,11 +88,11 @@ func (c *collection) calculatePage(collection *mgo.Collection, query interface{}
 	return page, nil
 }
 
-func (c *collection) calculateOffset(pagination *Pagination) int {
+func calculateOffset(pagination *Pagination) int {
 	return (pagination.Page - 1) * pagination.Size
 }
 
-func (c *collection) parseError(err error) errors.Error {
+func parseError(err error) errors.Error {
 
 	if err == nil {
 		return nil
@@ -103,6 +106,10 @@ func (c *collection) parseError(err error) errors.Error {
 	switch err.(type) {
 	case *mgo.QueryError:
 	case *mgo.LastError:
+		if mgo.IsDup(err) {
+			return errors.NewUnprocessableEntity("entity already exists")
+		}
+
 		return errors.NewUnprocessableEntity(err.Error())
 	}
 
