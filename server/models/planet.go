@@ -7,9 +7,9 @@ import (
 //Planet represents a star wars planet
 type Planet struct {
 	ID      int    `json:"id"`
-	Name    string `json:"name"`
-	Climate string `json:"climate"`
-	Terrain string `json:"terrain"`
+	Name    string `json:"name" binding:"required"`
+	Climate string `json:"climate" binding:"required"`
+	Terrain string `json:"terrain" binding:"required"`
 	Films   Films  `json:"films"`
 }
 
