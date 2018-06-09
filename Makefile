@@ -19,7 +19,8 @@ fmt:
 setup: dep
 
 run: dep
-	@go run api/main.go
+	@echo Initializing container
+	@sudo docker-compose up
 
 check: setup
 	@gometalinter ./... --aggregate --fast $(MODIFIED_FILES)
